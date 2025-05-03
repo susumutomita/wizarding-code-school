@@ -1,6 +1,7 @@
 # UI Components Storybook
 
-This directory contains documentation for the UI components used in Wizarding Code School. Storybook provides interactive examples and documentation for each component.
+This directory contains documentation for the UI components used in Wizarding Code
+School. Storybook provides interactive examples and documentation for each component.
 
 ## Running Storybook Locally
 
@@ -71,8 +72,8 @@ export const AnotherVariant: Story = {
 };
 ```
 
-2. Ensure your component has proper JSDoc comments for all props
-3. Run Storybook to verify your documentation
+1. Ensure your component has proper JSDoc comments for all props
+2. Run Storybook to verify your documentation
 
 ## Core Components
 
@@ -91,4 +92,5 @@ When a new version is released, static documentation is generated with:
 pnpm storybook:build
 ```
 
-The output is saved to this directory for reference by both developers and AI assistants.
+The output is saved to this directory for reference by both developers and AI
+assistants.

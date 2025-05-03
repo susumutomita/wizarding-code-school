@@ -1,6 +1,8 @@
 # Contributing to Wizarding Code School
 
-Thank you for your interest in contributing to the Wizarding Code School project! This guide will help you get started with the development workflow, coding standards, and process for submitting changes.
+Thank you for your interest in contributing to the Wizarding Code School project!
+This guide will help you get started with the development workflow, coding standards,
+and process for submitting changes.
 
 ## Issue and Pull Request Workflow
 
@@ -53,9 +55,10 @@ Always branch off from `main` when starting new work.
 
 ## Commit Message Style
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+We follow the [Conventional Commits](https://www.conventionalcommits.org/)
+specification:
 
-```
+```typescript
 <type>(<scope>): <description>
 
 [optional body]
@@ -75,7 +78,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 
 ### Examples
 
-```
+```typescript
 feat(parser): add support for while loops
 fix(dungeonview): prevent movement through walls
 docs(readme): update installation instructions
@@ -157,7 +160,8 @@ pnpm test
 
 ### Prompt for AI Contributors
 
-You are a senior developer contributing to the Wizarding Code School mini-app. Follow these guidelines:
+You are a senior developer contributing to the Wizarding Code School mini-app.
+Follow these guidelines:
 
 1. Branch from `main` with appropriate prefix (`feat/`, `docs/`, `fix/`)
 2. Implement changes following TypeScript/React best practices in STYLEGUIDE.md

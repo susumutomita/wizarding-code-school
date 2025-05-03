@@ -2,8 +2,9 @@
 
 ## Purpose
 
-This document defines the Domain-Specific Language (DSL) used in Wizarding Code School. "Spells" are JavaScript-like
-commands that control player movement through the maze.
+This document defines the Domain-Specific Language (DSL) used in Wizarding Code
+School. "Spells" are JavaScript-like commands that control player movement through
+the maze.
 
 ## Input
 
@@ -84,12 +85,17 @@ moveRight();
 
 ## Common Errors and Fixes
 
-| Error               | Message                                                  | Fix                                                                            |
-| ------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Unknown command     | `SyntaxError: Unknown command 'move()'`                  | Use one of the defined commands: moveUp(), moveDown(), moveLeft(), moveRight() |
-| Missing parentheses | `SyntaxError: Expected '(' after 'moveRight'`            | Make sure to include parentheses: `moveRight()`                                |
-| Unclosed block      | `SyntaxError: Missing closing '}'`                       | Ensure all code blocks have matching braces                                    |
-| Hitting a wall      | `Runtime Error: Cannot move into wall at position (x,y)` | Check maze boundaries before moving                                            |
+| Error               | Message                                       | Fix                                  |
+| ------------------- | --------------------------------------------- | ------------------------------------ |
+| Unknown command     | `SyntaxError: Unknown command 'move()'`       | Use one of the defined commands:     |
+|                     |                                               | moveUp(), moveDown(), moveLeft(),    |
+|                     |                                               | moveRight()                          |
+| Missing parentheses | `SyntaxError: Expected '(' after 'moveRight'` | Make sure to include parentheses:    |
+|                     |                                               | `moveRight()`                        |
+| Unclosed block      | `SyntaxError: Missing closing '}'`            | Ensure all code blocks have matching |
+|                     |                                               | braces                               |
+| Hitting a wall      | `Runtime Error: Cannot move into wall at      | Check maze boundaries before moving  |
+|                     | position (x,y)`                               |                                      |
 
 ## Extension Points
 

@@ -2,11 +2,15 @@
 
 ![CI](https://github.com/susumutomita/wizarding-code-school/actions/workflows/ci.yml/badge.svg)
 
-A gamified coding education mini-app that teaches programming concepts through interactive spell-casting challenges. Students write "spells" (JavaScript code) to navigate through magical dungeons and solve puzzles.
+A gamified coding education mini-app that teaches programming concepts through
+interactive spell-casting challenges. Students write "spells" (JavaScript code) to
+navigate through magical dungeons and solve puzzles.
 
 ## Why This Exists
 
-Wizarding Code School bridges the gap between traditional coding tutorials and engaging game experiences. Built as a World Mini-App, it demonstrates how educational content can be delivered in an immersive, interactive format.
+Wizarding Code School bridges the gap between traditional coding tutorials and
+engaging game experiences. Built as a World Mini-App, it demonstrates how educational
+content can be delivered in an immersive, interactive format.
 
 ## Project Overview
 
@@ -18,7 +22,8 @@ Wizarding Code School transforms learning to code into a magical adventure where
 - Authentication via SIWE (Sign-In With Ethereum) saves learning progress
 - Mini-App format makes it accessible across compatible worlds
 
-The project uses React with TypeScript, Monaco Editor for code editing, and Vite for blazing-fast development.
+The project uses React with TypeScript, Monaco Editor for code editing, and Vite for
+blazing-fast development.
 
 ## Quick Start
 
@@ -69,6 +74,7 @@ After running `pnpm dev`, the application will be available at `http://localhost
    ```
 
 5. **Lint your code**
+
    ```bash
    pnpm lint
    ```
@@ -99,16 +105,16 @@ flowchart LR
 
 ## Glossary
 
-| Term        | Definition                                                                          |
-| ----------- | ----------------------------------------------------------------------------------- |
-| Spell       | JavaScript-like code snippets that control player movement                          |
-| DungeonView | Grid-based visualization of the maze and player position                            |
-| Runner      | Execution engine that processes parsed commands and animates movement               |
-| SIWE        | Sign-In With Ethereum (EIP-4361) - authentication method used for progress tracking |
+| Term        | Definition                                                            |
+| ----------- | --------------------------------------------------------------------- |
+| Spell       | JavaScript-like code snippets that control player movement            |
+| DungeonView | Grid-based visualization of the maze and player position              |
+| Runner      | Execution engine that processes parsed commands and animates movement |
+| SIWE        | Sign-In With Ethereum (EIP-4361) - authentication method for tracking |
 
 ## Project Structure
 
-```
+```typescript
 wizarding-code-school/
 ├── src/
 │   ├── components/      # React components (DungeonView, EditorPane, etc.)
@@ -122,8 +128,10 @@ wizarding-code-school/
 
 ## Contributing
 
-Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to contribute to this project. We welcome contributions from all skill levels!
+Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to
+contribute to this project. We welcome contributions from all skill levels!
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file
+for details.

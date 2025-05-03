@@ -1,6 +1,7 @@
 # Style Guide
 
-This document outlines the coding standards and style guidelines for the Wizarding Code School project.
+This document outlines the coding standards and style guidelines for the Wizarding Code
+School project.
 
 ## TypeScript Naming Conventions
 
@@ -148,7 +149,8 @@ We use Prettier with the following configuration:
 
 Our project enforces the following ESLint rules:
 
-- `@typescript-eslint/explicit-function-return-type`: Functions must have explicit return types
+- `@typescript-eslint/explicit-function-return-type`: Functions must have
+  explicit return types
 - `@typescript-eslint/no-unused-vars`: No unused variables (with \_ prefix exception)
 - `react-hooks/rules-of-hooks`: Enforce Rules of Hooks
 - `react-hooks/exhaustive-deps`: Check effect dependencies
@@ -158,7 +160,7 @@ Our project enforces the following ESLint rules:
 
 ## File Structure
 
-```
+```typescript
 src/
 ├── components/           # React components
 │   ├── DungeonView/      # Component folder (for complex components)
