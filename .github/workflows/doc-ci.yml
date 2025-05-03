@@ -1,0 +1,61 @@
+name: Documentation Quality
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'docs/**'
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Markdown Lint
+        uses: DavidAnson/markdownlint-cli2-action@v11
+        with:
+          globs: '**/*.md'
+          config: |
+            {
+              "MD013": { "line_length": 120 },
+              "MD033": false
+            }
+
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install linkinator
+        run: npm install -g linkinator
+
+      - name: Check markdown links
+        run: linkinator '**/*.md' --skip 'https://api.github.com' --markdown
+
+  mermaid-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Find Mermaid Code Blocks
+        id: find-mermaid
+        run: |
+          MERMAID_FILES=$(grep -l '```mermaid' --include="*.md" -r .)
+          echo "Found Mermaid diagrams in: $MERMAID_FILES"
+          echo "mermaid_files=$MERMAID_FILES" >> $GITHUB_OUTPUT
+
+      - name: Validate Mermaid Syntax
+        if: steps.find-mermaid.outputs.mermaid_files != ''
+        uses: nielsvaneck/mermaid-markdown-test-action@v1
