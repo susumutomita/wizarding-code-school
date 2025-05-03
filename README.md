@@ -1,5 +1,7 @@
 # Wizarding Code School
 
+![CI](https://github.com/susumutomita/wizarding-code-school/actions/workflows/ci.yml/badge.svg)
+
 A gamified coding education mini-app that teaches programming concepts through interactive spell-casting challenges. Students write "spells" (JavaScript code) to navigate through magical dungeons and solve puzzles.
 
 ## Why This Exists
@@ -42,22 +44,26 @@ After running `pnpm dev`, the application will be available at `http://localhost
 ## Step-by-Step Development Guide
 
 1. **Set up your environment**
+
    ```bash
    # Install dependencies
    pnpm install
    ```
 
 2. **Start the development server**
+
    ```bash
    pnpm dev
    ```
 
 3. **Create or modify components**
+
    - Components are located in `src/components/`
    - Hooks can be found in `src/hooks/`
    - Maze data is defined in `src/data/`
 
 4. **Test your changes**
+
    ```bash
    pnpm test
    ```
@@ -93,12 +99,12 @@ flowchart LR
 
 ## Glossary
 
-| Term | Definition |
-|------|------------|
-| Spell | JavaScript-like code snippets that control player movement |
-| DungeonView | Grid-based visualization of the maze and player position |
-| Runner | Execution engine that processes parsed commands and animates movement |
-| SIWE | Sign-In With Ethereum (EIP-4361) - authentication method used for progress tracking |
+| Term        | Definition                                                                          |
+| ----------- | ----------------------------------------------------------------------------------- |
+| Spell       | JavaScript-like code snippets that control player movement                          |
+| DungeonView | Grid-based visualization of the maze and player position                            |
+| Runner      | Execution engine that processes parsed commands and animates movement               |
+| SIWE        | Sign-In With Ethereum (EIP-4361) - authentication method used for progress tracking |
 
 ## Project Structure
 
