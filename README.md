@@ -93,6 +93,16 @@ pnpm world pack
 
 The packaged Mini-App will be available in the `dist/` directory, ready for deployment.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    Editor["Monaco Editor\n(Spell Writing)"] --> Parser["Command Parser"]
+    Parser --> Runner["Spell Runner"]
+    Runner --> DungeonView["Dungeon View"]
+    Runner --> Feedback["Success/Fail Feedback"]
+```
+
 ## Glossary
 
 | Term        | Definition                                                            |
