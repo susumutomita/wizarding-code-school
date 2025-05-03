@@ -15,11 +15,11 @@ import hints from './data/hints';
 function App(): React.ReactElement {
   const [count, setCount] = useState(0);
   const [code, setCode] = useState('// Write your spell here\nmoveForward();');
-  
+
   const { address, requestAuth } = useWalletAuth();
-  
+
   const { currentHint, dismissHint, nextHint, resetTimer } = useHintTimer(hints.chapter1, 10000);
-  
+
   // Player position state
   const [playerPos, setPlayerPos] = useState({ x: 1, y: 1 }); // Default to start position
 
@@ -35,9 +35,9 @@ function App(): React.ReactElement {
       }
     }
   }, []);
-  
-  const { saveProgress, getSavedCode, isLevelCompleted } = 
-    address ? useProgress(address) : { saveProgress: () => false, getSavedCode: () => null, isLevelCompleted: () => false };
+
+  // Always call the hook regardless of address state
+  const { saveProgress } = useProgress(address);
 
   return (
     <>
@@ -50,18 +50,20 @@ function App(): React.ReactElement {
         </a>
       </div>
       <h1>Wizarding Code School</h1>
-      
+
       {/* Wallet Auth Section */}
       <div className="wallet-auth">
         {address ? (
           <div className="user-hud">
-            <p>{address.substring(0, 6)}...{address.substring(address.length - 4)} logged in</p>
+            <p>
+              {address.substring(0, 6)}...{address.substring(address.length - 4)} logged in
+            </p>
           </div>
         ) : (
           <button onClick={requestAuth}>Connect Wallet</button>
         )}
       </div>
-      
+
       <div className="card">
         <button onClick={() => setCount(count => count + 1)}>count is {count}</button>
         <p>
@@ -80,22 +82,18 @@ function App(): React.ReactElement {
         <div style={{ marginTop: '10px' }}>
           <h3>Current Spell:</h3>
           <pre>{code}</pre>
-          <RunControls 
-            code={code} 
-            maze={mazeData} 
-            position={playerPos} 
+          <RunControls
+            code={code}
+            maze={mazeData}
+            position={playerPos}
             onPositionChange={setPlayerPos}
-            onSuccess={(code) => address && saveProgress(1, true, code)} 
+            onSuccess={code => address && saveProgress(1, true, code)}
           />
         </div>
       </div>
-      
+
       {/* Hint System */}
-      <HintBox 
-        hint={currentHint}
-        onDismiss={dismissHint}
-        onNext={nextHint}
-      />
+      <HintBox hint={currentHint} onDismiss={dismissHint} onNext={nextHint} />
 
       <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
     </>
