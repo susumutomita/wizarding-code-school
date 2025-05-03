@@ -1,0 +1,86 @@
+.dungeon-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.dungeon-grid {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.cell {
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+}
+
+.cell.wall {
+  background-color: #888; /* Gray for walls */
+}
+
+.cell.floor {
+  background-color: #000; /* Black for floor */
+}
+
+.cell.player {
+  background-color: #000; /* Black background */
+  position: relative;
+}
+
+.cell.player::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background-color: #0088ff; /* Blue circle for player */
+}
+
+.cell.start {
+  background-color: #000; /* Black background */
+  position: relative;
+}
+
+.cell.start::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background-color: #ff8800; /* Orange circle for start */
+}
+
+.cell.goal {
+  background-color: #000; /* Black background */
+  position: relative;
+}
+
+.cell.goal::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background-color: #00cc44; /* Green circle for goal */
+}
+
+.debug-info {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #333;
+  border-radius: 4px;
+  font-family: monospace;
+}
