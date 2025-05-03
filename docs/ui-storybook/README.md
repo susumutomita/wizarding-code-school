@@ -14,7 +14,7 @@ cd /path/to/wizarding-code-school
 pnpm storybook
 ```
 
-This will open Storybook in your browser at [http://localhost:6006](http://localhost:6006).
+This will open Storybook in your browser at `http://localhost:6006`.
 
 ## Component Documentation Structure
 
