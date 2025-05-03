@@ -16,27 +16,22 @@ jobs:
   markdown-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Markdown Lint
         uses: DavidAnson/markdownlint-cli2-action@v11
         with:
           globs: '**/*.md'
-          config: |
-            {
-              "MD013": { "line_length": 120 },
-              "MD033": false
-            }
 
   link-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Install linkinator
         run: npm install -g linkinator
@@ -47,7 +42,7 @@ jobs:
   mermaid-validation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Find Mermaid Code Blocks
         id: find-mermaid
@@ -58,4 +53,8 @@ jobs:
 
       - name: Validate Mermaid Syntax
         if: steps.find-mermaid.outputs.mermaid_files != ''
-        uses: nielsvaneck/mermaid-markdown-test-action@v1
+        run: |
+          for file in ${{ steps.find-mermaid.outputs.mermaid_files }}; do
+            echo "Validating Mermaid syntax in $file"
+            mermaid --input "$file" --output /dev/null
+          done

@@ -15,7 +15,7 @@ export interface Position {
 
 /**
  * Executes parsed commands to animate player movement
- * 
+ *
  * @param commands - Array of commands to execute
  * @param initialPos - Starting position of the player
  * @param maze - 2D array representing the maze (0=empty, 1=wall, 2=start, 3=goal)
@@ -49,7 +49,7 @@ export function run(
     return maze[pos.y][pos.x] === 3;
   };
 
-  const step = (timestamp: number) => {
+  const step = (timestamp: number): void => {
     if (!running) return;
 
     if (timestamp - lastTimestamp < 200) {
@@ -101,7 +101,7 @@ export function run(
   animationFrameId = requestAnimationFrame(step);
 
   return {
-    stop: () => {
+    stop: (): void => {
       running = false;
       if (animationFrameId !== null) {
         cancelAnimationFrame(animationFrameId);

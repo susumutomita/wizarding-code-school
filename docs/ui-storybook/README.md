@@ -1,6 +1,7 @@
 # UI Components Storybook
 
-This directory contains documentation for the UI components used in Wizarding Code School. Storybook provides interactive examples and documentation for each component.
+This directory contains documentation for the UI components used in Wizarding Code
+School. Storybook provides interactive examples and documentation for each component.
 
 ## Running Storybook Locally
 
@@ -14,7 +15,7 @@ cd /path/to/wizarding-code-school
 pnpm storybook
 ```
 
-This will open Storybook in your browser at [http://localhost:6006](http://localhost:6006).
+This will open Storybook in your browser at `http://localhost:6006`.
 
 ## Component Documentation Structure
 
@@ -91,4 +92,5 @@ When a new version is released, static documentation is generated with:
 pnpm storybook:build
 ```
 
-The output is saved to this directory for reference by both developers and AI assistants.
+The output is saved to this directory for reference by both developers and AI
+assistants.

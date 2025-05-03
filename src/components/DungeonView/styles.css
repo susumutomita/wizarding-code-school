@@ -87,8 +87,13 @@
 
 /* Error flash animation for wall collisions */
 @keyframes error-flash {
-  0%, 100% { background-color: inherit; }
-  50% { background-color: rgba(255, 0, 0, 0.3); }
+  0%,
+  100% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: rgba(255, 0, 0, 0.3);
+  }
 }
 
 .error-flash {

@@ -11,56 +11,63 @@ const STORAGE_KEY_PREFIX = 'wcs_';
  * Hook for managing user progress
  * @param address Wallet address to associate with progress
  */
-export const useProgress = (address: string | null) => {
+export const useProgress = (
+  address: string | null
+): {
+  completed: number[];
+  saveProgress: (levelId: number, isCompleted: boolean, code?: string) => boolean;
+  getSavedCode: (levelId: number) => string | null;
+  isLevelCompleted: (levelId: number) => boolean;
+} => {
   const [completed, setCompleted] = useState<number[]>([]);
   const [savedCode, setSavedCode] = useState<Record<number, string>>({});
 
   useEffect(() => {
     if (!address) return;
-    
+
     const storageKey = `${STORAGE_KEY_PREFIX}${address}`;
     const savedProgress = localStorage.getItem(storageKey);
-    
+
     if (savedProgress) {
       try {
         const parsed = JSON.parse(savedProgress) as Progress;
         setCompleted(parsed.completedLevels || []);
         setSavedCode(parsed.currentCode || {});
-      } catch (e) {
-        console.error('Failed to parse saved progress:', e);
+      } catch {
+        // Failed to parse saved progress
       }
     }
   }, [address]);
 
-  const saveProgress = (levelId: number, completed: boolean, code?: string) => {
+  const saveProgress = (levelId: number, isCompleted: boolean, code?: string): boolean => {
     if (!address) return false;
-    
+
     const storageKey = `${STORAGE_KEY_PREFIX}${address}`;
-    
-    let newCompleted = [...completed];
-    let newSavedCode = { ...savedCode };
-    
-    if (completed && !newCompleted.includes(levelId)) {
+
+    const newCompleted = [...completed];
+    const newSavedCode = { ...savedCode };
+
+    if (isCompleted && !newCompleted.includes(levelId)) {
       newCompleted.push(levelId);
     }
-    
+
     if (code) {
       newSavedCode[levelId] = code;
     }
-    
+
     setCompleted(newCompleted);
     setSavedCode(newSavedCode);
-    
+
     const progressData: Progress = {
       completedLevels: newCompleted,
-      currentCode: newSavedCode
+      currentCode: newSavedCode,
     };
-    
+
     try {
       localStorage.setItem(storageKey, JSON.stringify(progressData));
       return true;
-    } catch (e) {
-      console.error('Failed to save progress:', e);
+    } catch {
+      // Failed to save progress
       return false;
     }
   };
@@ -77,6 +84,6 @@ export const useProgress = (address: string | null) => {
     completed,
     saveProgress,
     getSavedCode,
-    isLevelCompleted
+    isLevelCompleted,
   };
 };

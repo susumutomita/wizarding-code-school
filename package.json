@@ -9,8 +9,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "preview": "vite preview",
-    "world:dev": "world dev",
-    "world:pack": "world pack",
+    "world:dev": "node scripts/world.js dev",
+    "world:pack": "node scripts/world.js pack",
     "prepare": "husky"
   },
   "dependencies": {
