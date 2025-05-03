@@ -72,8 +72,8 @@ export const AnotherVariant: Story = {
 };
 ```
 
-1. Ensure your component has proper JSDoc comments for all props
-2. Run Storybook to verify your documentation
+2. Ensure your component has proper JSDoc comments for all props
+3. Run Storybook to verify your documentation
 
 ## Core Components
 

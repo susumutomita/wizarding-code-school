@@ -22,8 +22,8 @@ Wizarding Code School transforms learning to code into a magical adventure where
 - Authentication via SIWE (Sign-In With Ethereum) saves learning progress
 - Mini-App format makes it accessible across compatible worlds
 
-The project uses React with TypeScript, Monaco Editor for code editing, and Vite for
-blazing-fast development.
+The project uses React with TypeScript, Monaco Editor for code editing, and Vite
+for blazing-fast development.
 
 ## Quick Start
 
@@ -97,10 +97,10 @@ The packaged Mini-App will be available in the `dist/` directory, ready for depl
 
 ```mermaid
 flowchart LR
-    Editor["Monaco Editor\n(Spell Writing)"] --> Parser["Command Parser"]
+    Editor["Monaco Editor"] --> Parser["Command Parser"]
     Parser --> Runner["Spell Runner"]
     Runner --> DungeonView["Dungeon View"]
-    Runner --> Feedback["Success/Fail Feedback"]
+    Runner --> Feedback["Success Fail Feedback"]
 ```
 
 ## Glossary

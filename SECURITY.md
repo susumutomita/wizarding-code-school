@@ -25,18 +25,19 @@ implementation details and security considerations.
 
 ### Threat Model
 
-| Threat                               | Mitigation                                  |
-| ------------------------------------ | ------------------------------------------- |
-| Unauthorized access to user progress | Data is keyed by wallet address; only users |
-|                                      | with wallet control can access their data   |
-| Session hijacking                    | We validate wallet signatures on every      |
-|                                      | session start                               |
-| Replay attacks                       | SIWE messages contain timestamps and nonces |
-|                                      | to prevent reuse                            |
-| localStorage tampering               | We don't store sensitive data; only level   |
-|                                      | completion status                           |
-| Lack of wallet                       | Authentication is optional; users can still |
-|                                      | play without progress tracking              |
+| Threat                               | Mitigation                             |
+| ------------------------------------ | -------------------------------------- |
+| Unauthorized access to user progress | Data is keyed by wallet address; only  |
+|                                      | users with wallet control can access   |
+|                                      | their data                             |
+| Session hijacking                    | We validate wallet signatures on every |
+|                                      | session start                          |
+| Replay attacks                       | SIWE messages contain timestamps and   |
+|                                      | nonces to prevent reuse                |
+| localStorage tampering               | We don't store sensitive data; only    |
+|                                      | level completion status                |
+| Lack of wallet                       | Authentication is optional; users can  |
+|                                      | still play without progress tracking   |
 
 ### Security Limitations
 
@@ -51,7 +52,7 @@ If you discover a security vulnerability in the Wizarding Code School project, p
 follow these steps:
 
 1. **Do not disclose the vulnerability publicly**
-2. Email details to [security@example.com](mailto:security@example.com) with
+2. Email details to security with
    "SECURITY VULNERABILITY" in the subject line
 3. Include:
    - Description of the vulnerability

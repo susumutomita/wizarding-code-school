@@ -25,9 +25,11 @@ Parsed `Command[]` array with movement directives that can be executed by the Ru
 
 ## Control Flow Commands
 
-| Command                    | Description                           | Example                                  |
-| -------------------------- | ------------------------------------- | ---------------------------------------- |
-| `while(condition) { ... }` | Repeat block until condition is false | `while(canMoveRight()) { moveRight(); }` |
+| Command                    | Description                           | Example                   |
+| -------------------------- | ------------------------------------- | ------------------------- |
+| `while(condition) { ... }` | Repeat block until condition is false | `while(canMoveRight()) {` |
+|                            |                                       | `  moveRight();`          |
+|                            |                                       | `}`                       |
 
 ## Formal Grammar
 

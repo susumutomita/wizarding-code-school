@@ -1,20 +1,20 @@
 # Style Guide
 
-This document outlines the coding standards and style guidelines for the Wizarding Code
-School project.
+This document outlines the coding standards and style guidelines for the
+Wizarding Code School project.
 
 ## TypeScript Naming Conventions
 
-| Type       | Convention                  | Example                                |
-| ---------- | --------------------------- | -------------------------------------- |
-| Components | PascalCase                  | `DungeonView.tsx`, `EditorPane.tsx`    |
-| Hooks      | camelCase with 'use' prefix | `useWalletAuth.ts`, `useProgress.ts`   |
-| Interfaces | PascalCase with 'I' prefix  | `IPlayerPosition`, `ISpellCommand`     |
-| Types      | PascalCase                  | `Position`, `Command`, `MazeCell`      |
-| Constants  | UPPER_SNAKE_CASE            | `MAX_MAZE_SIZE`, `DEFAULT_TIMEOUT_MS`  |
-| Functions  | camelCase                   | `parseSpellCode()`, `executeCommand()` |
-| Files      | kebab-case                  | `dungeon-view.tsx`, `editor-pane.tsx`  |
-| Variables  | camelCase                   | `playerPosition`, `currentLevel`       |
+| Type       | Convention                  | Example                               |
+| ---------- | --------------------------- | ------------------------------------- |
+| Components | PascalCase                  | `DungeonView.tsx`, `EditorPane.tsx`   |
+| Hooks      | camelCase with 'use' prefix | `useWalletAuth.ts`, `useProgress.ts`  |
+| Interfaces | PascalCase with 'I' prefix  | `IPlayerPosition`, `ISpellCommand`    |
+| Types      | PascalCase                  | `Position`, `Command`, `MazeCell`     |
+| Constants  | UPPER_SNAKE_CASE            | `MAX_MAZE_SIZE`, `DEFAULT_TIMEOUT`    |
+| Functions  | camelCase                   | `parseSpellCode()`, `execute()`       |
+| Files      | kebab-case                  | `dungeon-view.tsx`, `editor-pane.tsx` |
+| Variables  | camelCase                   | `playerPosition`, `currentLevel`      |
 
 ## React Patterns
 
