@@ -1,12 +1,27 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const mockWalletAuth = {
+// Define the interface for wallet auth
+interface WalletAuth {
+  request: () => Promise<{ address: string }>;
+}
+
+// Extend Window interface to include our custom properties
+declare global {
+  interface Window {
+    world?: {
+      walletAuth: WalletAuth;
+    };
+  }
+}
+
+const mockWalletAuth: WalletAuth = {
   request: async (): Promise<{ address: string }> => {
     return { address: '0x1234567890abcdef1234567890abcdef12345678' };
   },
 };
 
-const walletAuth =
+// Safely access window.world.walletAuth with type safety
+const walletAuth: WalletAuth =
   typeof window !== 'undefined' && window.world?.walletAuth
     ? window.world.walletAuth
     : mockWalletAuth;

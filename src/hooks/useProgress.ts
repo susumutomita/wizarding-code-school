@@ -15,7 +15,7 @@ export const useProgress = (
   address: string | null
 ): {
   completed: number[];
-  saveProgress: (levelId: number, completed: boolean, code?: string) => boolean;
+  saveProgress: (levelId: number, isCompleted: boolean, code?: string) => boolean;
   getSavedCode: (levelId: number) => string | null;
   isLevelCompleted: (levelId: number) => boolean;
 } => {
@@ -39,7 +39,7 @@ export const useProgress = (
     }
   }, [address]);
 
-  const saveProgress = (levelId: number, completed: boolean, code?: string): boolean => {
+  const saveProgress = (levelId: number, isCompleted: boolean, code?: string): boolean => {
     if (!address) return false;
 
     const storageKey = `${STORAGE_KEY_PREFIX}${address}`;
@@ -47,7 +47,7 @@ export const useProgress = (
     const newCompleted = [...completed];
     const newSavedCode = { ...savedCode };
 
-    if (completed && !newCompleted.includes(levelId)) {
+    if (isCompleted && !newCompleted.includes(levelId)) {
       newCompleted.push(levelId);
     }
 
