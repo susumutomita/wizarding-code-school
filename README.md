@@ -6,21 +6,80 @@ A gamified coding education mini-app that teaches programming concepts through i
 
 Wizarding Code School bridges the gap between traditional coding tutorials and engaging game experiences. Built as a World Mini-App, it demonstrates how educational content can be delivered in an immersive, interactive format.
 
+## Project Overview
+
+Wizarding Code School transforms learning to code into a magical adventure where:
+
+- Students write JavaScript "spells" to navigate through dungeons
+- Real-time feedback helps learners understand programming concepts
+- Progressive challenges introduce variables, loops, conditionals, and functions
+- Authentication via SIWE (Sign-In With Ethereum) saves learning progress
+- Mini-App format makes it accessible across compatible worlds
+
+The project uses React with TypeScript, Monaco Editor for code editing, and Vite for blazing-fast development.
+
 ## Quick Start
 
 ```bash
+# Clone the repository
+git clone https://github.com/susumutomita/wizarding-code-school.git
+cd wizarding-code-school
+
 # Install dependencies
 pnpm install
 
-# Development server
+# Start development server
 pnpm dev
+```
 
-# World Mini-App development mode
+After running `pnpm dev`, the application will be available at `http://localhost:5173`.
+
+### System Requirements
+
+- Node.js 18+
+- pnpm 8+
+
+## Step-by-Step Development Guide
+
+1. **Set up your environment**
+   ```bash
+   # Install dependencies
+   pnpm install
+   ```
+
+2. **Start the development server**
+   ```bash
+   pnpm dev
+   ```
+
+3. **Create or modify components**
+   - Components are located in `src/components/`
+   - Hooks can be found in `src/hooks/`
+   - Maze data is defined in `src/data/`
+
+4. **Test your changes**
+   ```bash
+   pnpm test
+   ```
+
+5. **Lint your code**
+   ```bash
+   pnpm lint
+   ```
+
+## Mini-App Build Instructions
+
+To package the application as a World Mini-App:
+
+```bash
+# Development mode with hot reloading
 pnpm world dev
 
-# Package as World Mini-App
+# Build for production
 pnpm world pack
 ```
+
+The packaged Mini-App will be available in the `dist/` directory, ready for deployment.
 
 ## Architecture
 
@@ -57,7 +116,7 @@ wizarding-code-school/
 
 ## Contributing
 
-Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to contribute to this project.
+Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to contribute to this project. We welcome contributions from all skill levels!
 
 ## License
 
