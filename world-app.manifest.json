@@ -1,0 +1,8 @@
+{
+  "name": "Wizarding Code School",
+  "description": "A gamified coding education mini-app that teaches programming concepts through interactive spell-casting challenges",
+  "icon": "/public/vite.svg",
+  "categories": ["education", "development", "games"],
+  "permissions": ["wallet-auth"],
+  "version": "0.0.0"
+}
