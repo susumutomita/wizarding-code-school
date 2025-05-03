@@ -1,12 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import { EditorPane } from './components/EditorPane';
+import { DungeonView } from './components/DungeonView';
+import mazeData from './data/maze-01.json';
 
 function App(): React.ReactElement {
   const [count, setCount] = useState(0);
   const [code, setCode] = useState('// Write your spell here\nmoveForward();');
+
+  // Player position state
+  const [playerPos, setPlayerPos] = useState({ x: 1, y: 1 }); // Default to start position
+
+  // Find start position in maze
+  useEffect(() => {
+    for (let y = 0; y < mazeData.length; y++) {
+      for (let x = 0; x < mazeData[y].length; x++) {
+        if (mazeData[y][x] === 2) {
+          // Start position
+          setPlayerPos({ x, y });
+          break;
+        }
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -27,6 +45,11 @@ function App(): React.ReactElement {
       </div>
 
       <div style={{ margin: '20px 0' }}>
+        <h2>Dungeon View</h2>
+        <DungeonView maze={mazeData} pos={playerPos} onPosChange={setPlayerPos} debugMode={true} />
+      </div>
+
+      <div style={{ margin: '20px 0' }}>
         <h2>Spell Editor</h2>
         <EditorPane code={code} onChange={setCode} />
         <div style={{ marginTop: '10px' }}>
@@ -34,7 +57,7 @@ function App(): React.ReactElement {
           <pre>{code}</pre>
         </div>
       </div>
-      
+
       <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
     </>
   );
