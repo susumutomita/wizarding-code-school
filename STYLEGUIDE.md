@@ -4,16 +4,16 @@ This document outlines the coding standards and style guidelines for the Wizardi
 
 ## TypeScript Naming Conventions
 
-| Type | Convention | Example |
-|------|------------|---------|
-| Components | PascalCase | `DungeonView.tsx`, `EditorPane.tsx` |
-| Hooks | camelCase with 'use' prefix | `useWalletAuth.ts`, `useProgress.ts` |
-| Interfaces | PascalCase with 'I' prefix | `IPlayerPosition`, `ISpellCommand` |
-| Types | PascalCase | `Position`, `Command`, `MazeCell` |
-| Constants | UPPER_SNAKE_CASE | `MAX_MAZE_SIZE`, `DEFAULT_TIMEOUT_MS` |
-| Functions | camelCase | `parseSpellCode()`, `executeCommand()` |
-| Files | kebab-case | `dungeon-view.tsx`, `editor-pane.tsx` |
-| Variables | camelCase | `playerPosition`, `currentLevel` |
+| Type       | Convention                  | Example                                |
+| ---------- | --------------------------- | -------------------------------------- |
+| Components | PascalCase                  | `DungeonView.tsx`, `EditorPane.tsx`    |
+| Hooks      | camelCase with 'use' prefix | `useWalletAuth.ts`, `useProgress.ts`   |
+| Interfaces | PascalCase with 'I' prefix  | `IPlayerPosition`, `ISpellCommand`     |
+| Types      | PascalCase                  | `Position`, `Command`, `MazeCell`      |
+| Constants  | UPPER_SNAKE_CASE            | `MAX_MAZE_SIZE`, `DEFAULT_TIMEOUT_MS`  |
+| Functions  | camelCase                   | `parseSpellCode()`, `executeCommand()` |
+| Files      | kebab-case                  | `dungeon-view.tsx`, `editor-pane.tsx`  |
+| Variables  | camelCase                   | `playerPosition`, `currentLevel`       |
 
 ## React Patterns
 
@@ -51,11 +51,7 @@ export const ComponentName: React.FC<ComponentNameProps> = ({ propOne, propTwo =
   };
 
   // Render
-  return (
-    <div className="component-name">
-      {/* JSX content */}
-    </div>
-  );
+  return <div className="component-name">{/* JSX content */}</div>;
 };
 ```
 
@@ -106,7 +102,7 @@ export const useHookName = (
 
 We use TSDoc-style comments for functions and components:
 
-```typescript
+````typescript
 /**
  * Short description of function/component
  *
@@ -122,7 +118,7 @@ We use TSDoc-style comments for functions and components:
 function myFunction(paramName: string, options: Options): ReturnType {
   // Implementation
 }
-```
+````
 
 For inline comments, use `//` with a space after:
 
@@ -153,7 +149,7 @@ We use Prettier with the following configuration:
 Our project enforces the following ESLint rules:
 
 - `@typescript-eslint/explicit-function-return-type`: Functions must have explicit return types
-- `@typescript-eslint/no-unused-vars`: No unused variables (with _ prefix exception)
+- `@typescript-eslint/no-unused-vars`: No unused variables (with \_ prefix exception)
 - `react-hooks/rules-of-hooks`: Enforce Rules of Hooks
 - `react-hooks/exhaustive-deps`: Check effect dependencies
 - `react/prop-types`: Off (TypeScript handles type checking)

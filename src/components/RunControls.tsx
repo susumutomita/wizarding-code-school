@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { parse } from '../utils/parse';
 import { run, Position, RunnerResult } from '../utils/runner';
 
-
 /**
  * Props for the RunControls component
  */
@@ -33,28 +32,28 @@ export const RunControls: React.FC<RunControlsProps> = ({
   const [result, setResult] = useState<RunnerResult | null>(null);
   const [stopRunner, setStopRunner] = useState<(() => void) | null>(null);
 
-  const handleRun = () => {
+  const handleRun = (): void => {
     try {
       setIsRunning(true);
       setResult(null);
-      
+
       const commands = parse(code);
-      
+
       const runner = run(
         commands,
         position,
         maze,
-        (newPos) => {
+        newPos => {
           onPositionChange(newPos);
         },
-        (runResult) => {
+        runResult => {
           setIsRunning(false);
           setResult(runResult);
           setStopRunner(null);
-          
+
           if (runResult === 'success') {
-            console.log('Success! 🎉');
-            
+            // Success feedback
+
             if (onSuccess) {
               onSuccess(code);
             }
@@ -66,20 +65,20 @@ export const RunControls: React.FC<RunControlsProps> = ({
                 dungeonElement.classList.remove('error-flash');
               }, 500);
             }
-            console.log('Failure! ❌');
+            // Failure feedback
           }
         }
       );
-      
+
       setStopRunner(() => runner.stop);
-    } catch (error) {
-      console.error('Error executing spell:', error);
+    } catch {
+      // Handle execution error
       setIsRunning(false);
       setResult('fail');
     }
   };
 
-  const handleStop = () => {
+  const handleStop = (): void => {
     if (stopRunner) {
       stopRunner();
       setStopRunner(null);
@@ -92,15 +91,9 @@ export const RunControls: React.FC<RunControlsProps> = ({
       <button onClick={handleRun} disabled={isRunning}>
         {isRunning ? 'Running...' : 'Run Spell'}
       </button>
-      {isRunning && (
-        <button onClick={handleStop}>Stop</button>
-      )}
-      {result === 'success' && (
-        <div className="success-message">Spell succeeded! 🎉</div>
-      )}
-      {result === 'fail' && (
-        <div className="error-message">Spell failed! Try again.</div>
-      )}
+      {isRunning && <button onClick={handleStop}>Stop</button>}
+      {result === 'success' && <div className="success-message">Spell succeeded! 🎉</div>}
+      {result === 'fail' && <div className="error-message">Spell failed! Try again.</div>}
     </div>
   );
 };

@@ -18,7 +18,7 @@ interface HintBoxProps {
  */
 export const HintBox: React.FC<HintBoxProps> = ({ hint, onDismiss, onNext }) => {
   if (!hint) return null;
-  
+
   return (
     <div className="hint-box">
       <div className="hint-content">

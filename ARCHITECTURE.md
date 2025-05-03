@@ -50,15 +50,15 @@ C4Context
 
 ## Module Responsibilities
 
-| Module | Purpose | Public API |
-|--------|---------|------------|
-| EditorPane | Code editing interface | `<EditorPane code={string} onChange={(v: string) => void} />` |
-| DungeonView | Renders maze and player | `<DungeonView maze={number[][]} pos={{x: number, y: number}} />` |
-| Parser | Converts code to commands | `parse(text: string): Command[]` |
-| Runner | Executes movement logic | `run(commands: Command[], initialPos: Position, maze: Maze, onStep: Callback, onEnd: Callback): void` |
-| WalletAuth | User authentication | `useWalletAuth(): { address: string \| null, requestAuth: () => Promise<void> }` |
-| ProgressTracker | Saves/loads progress | `useProgress(address: string): { completed: string[], saveProgress: (level: string) => void }` |
-| HintSystem | Provides guidance | `useHintTimer(hints: string[], idleMs?: number): { currentHint: string \| null }` |
+| Module          | Purpose                   | Public API                                                                                            |
+| --------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| EditorPane      | Code editing interface    | `<EditorPane code={string} onChange={(v: string) => void} />`                                         |
+| DungeonView     | Renders maze and player   | `<DungeonView maze={number[][]} pos={{x: number, y: number}} />`                                      |
+| Parser          | Converts code to commands | `parse(text: string): Command[]`                                                                      |
+| Runner          | Executes movement logic   | `run(commands: Command[], initialPos: Position, maze: Maze, onStep: Callback, onEnd: Callback): void` |
+| WalletAuth      | User authentication       | `useWalletAuth(): { address: string \| null, requestAuth: () => Promise<void> }`                      |
+| ProgressTracker | Saves/loads progress      | `useProgress(address: string): { completed: string[], saveProgress: (level: string) => void }`        |
+| HintSystem      | Provides guidance         | `useHintTimer(hints: string[], idleMs?: number): { currentHint: string \| null }`                     |
 
 ## Future Work
 

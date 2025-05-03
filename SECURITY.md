@@ -20,13 +20,13 @@ The Wizarding Code School mini-app uses Wallet Authentication via Sign-In with E
 
 ### Threat Model
 
-| Threat | Mitigation |
-|--------|------------|
+| Threat                               | Mitigation                                                                                     |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------- |
 | Unauthorized access to user progress | Data is keyed by wallet address; only users with wallet control can access their specific data |
-| Session hijacking | We validate wallet signatures on every session start |
-| Replay attacks | SIWE messages contain timestamps and nonces to prevent reuse |
-| localStorage tampering | We don't store sensitive data; only level completion status |
-| Lack of wallet | Authentication is optional; users can still play without progress tracking |
+| Session hijacking                    | We validate wallet signatures on every session start                                           |
+| Replay attacks                       | SIWE messages contain timestamps and nonces to prevent reuse                                   |
+| localStorage tampering               | We don't store sensitive data; only level completion status                                    |
+| Lack of wallet                       | Authentication is optional; users can still play without progress tracking                     |
 
 ### Security Limitations
 
@@ -70,6 +70,7 @@ The following tools are used to ensure security in our CI/CD pipeline:
 ## Browser and Device Support
 
 We focus our security testing on:
+
 - Latest 2 versions of major browsers (Chrome, Firefox, Safari, Edge)
 - Mobile browsers on iOS 14+ and Android 10+
 - World App's embedded browser environment

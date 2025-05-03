@@ -42,12 +42,12 @@ Thank you for your interest in contributing to the Wizarding Code School project
 
 We follow a simple branching model:
 
-| Branch Type | Naming Convention | Purpose |
-|-------------|-------------------|---------|
-| `main` | `main` | Production-ready code |
-| Feature Branch | `feat/feature-name` | New features or enhancements |
-| Documentation Branch | `docs/topic-name` | Documentation updates |
-| Bug Fix Branch | `fix/bug-description` | Fixing issues |
+| Branch Type          | Naming Convention     | Purpose                      |
+| -------------------- | --------------------- | ---------------------------- |
+| `main`               | `main`                | Production-ready code        |
+| Feature Branch       | `feat/feature-name`   | New features or enhancements |
+| Documentation Branch | `docs/topic-name`     | Documentation updates        |
+| Bug Fix Branch       | `fix/bug-description` | Fixing issues                |
 
 Always branch off from `main` when starting new work.
 
@@ -86,19 +86,23 @@ docs(readme): update installation instructions
 This project uses ESLint and TypeScript for code quality. Our configuration enforces:
 
 ### TypeScript Standards
+
 - Strict type checking
 - No implicit `any` types
 - No unused variables or parameters
 - Consistent interface and type definitions
 
 ### React Best Practices
+
 - Functional components with hooks
 - Proper prop typing with PropTypes or TypeScript interfaces
 - No direct DOM manipulation
 - Consistent component structure
 
 ### Lint Rules
+
 Our ESLint configuration includes:
+
 - JavaScript Standard Style with TypeScript extensions
 - React hooks rules (proper dependencies in useEffect, etc.)
 - Import sorting and organization
@@ -106,6 +110,7 @@ Our ESLint configuration includes:
 - No console.log statements in production code
 
 To check your code against lint rules:
+
 ```bash
 # Run lint check
 pnpm lint
@@ -118,14 +123,14 @@ See the `eslint.config.js` file for the complete configuration.
 
 ## Issue Labels
 
-| Label | Description |
-|-------|--------------|
-| `type:feature` | New feature requests or implementations |
-| `type:bug` | Something isn't working |
-| `type:docs` | Documentation improvements |
-| `type:chore` | Repository maintenance tasks |
-| `good first issue` | Good for newcomers |
-| `help wanted` | Extra attention needed |
+| Label              | Description                             |
+| ------------------ | --------------------------------------- |
+| `type:feature`     | New feature requests or implementations |
+| `type:bug`         | Something isn't working                 |
+| `type:docs`        | Documentation improvements              |
+| `type:chore`       | Repository maintenance tasks            |
+| `good first issue` | Good for newcomers                      |
+| `help wanted`      | Extra attention needed                  |
 
 ## Development Setup
 

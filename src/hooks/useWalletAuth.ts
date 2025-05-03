@@ -1,26 +1,29 @@
 import { useState, useEffect, useCallback } from 'react';
 
-
 const mockWalletAuth = {
-  request: async () => {
+  request: async (): Promise<{ address: string }> => {
     return { address: '0x1234567890abcdef1234567890abcdef12345678' };
-  }
+  },
 };
 
-const walletAuth = typeof window !== 'undefined' && 
-  window.world?.walletAuth ? 
-  window.world.walletAuth : 
-  mockWalletAuth;
+const walletAuth =
+  typeof window !== 'undefined' && window.world?.walletAuth
+    ? window.world.walletAuth
+    : mockWalletAuth;
 
 /**
  * Hook for handling wallet authentication
  * Returns the wallet address and a function to request authentication
  */
-export const useWalletAuth = () => {
+export const useWalletAuth = (): {
+  address: string | null;
+  error: Error | null;
+  requestAuth: () => Promise<{ address: string }>;
+} => {
   const [address, setAddress] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
-  const requestAuth = useCallback(async () => {
+  const requestAuth = useCallback(async (): Promise<{ address: string }> => {
     try {
       const result = await walletAuth.request();
       setAddress(result.address);
@@ -33,14 +36,14 @@ export const useWalletAuth = () => {
   }, []);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = async (): Promise<void> => {
       try {
         const result = await walletAuth.request();
         if (result.address) {
           setAddress(result.address);
         }
-      } catch (e) {
-        console.log('Initial auth check failed, user can authenticate later');
+      } catch {
+        // Initial auth check failed, user can authenticate later
       }
     };
 
