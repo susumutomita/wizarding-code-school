@@ -5,12 +5,16 @@ import './App.css';
 import { EditorPane } from './components/EditorPane';
 import { DungeonView } from './components/DungeonView';
 import { RunControls } from './components/RunControls';
+import { useWalletAuth } from './hooks/useWalletAuth';
+import { useProgress } from './hooks/useProgress';
 import mazeData from './data/maze-01.json';
 
 function App(): React.ReactElement {
   const [count, setCount] = useState(0);
   const [code, setCode] = useState('// Write your spell here\nmoveForward();');
-
+  
+  const { address, requestAuth } = useWalletAuth();
+  
   // Player position state
   const [playerPos, setPlayerPos] = useState({ x: 1, y: 1 }); // Default to start position
 
@@ -26,6 +30,9 @@ function App(): React.ReactElement {
       }
     }
   }, []);
+  
+  const { saveProgress, getSavedCode, isLevelCompleted } = 
+    address ? useProgress(address) : { saveProgress: () => false, getSavedCode: () => null, isLevelCompleted: () => false };
 
   return (
     <>
@@ -38,6 +45,18 @@ function App(): React.ReactElement {
         </a>
       </div>
       <h1>Wizarding Code School</h1>
+      
+      {/* Wallet Auth Section */}
+      <div className="wallet-auth">
+        {address ? (
+          <div className="user-hud">
+            <p>{address.substring(0, 6)}...{address.substring(address.length - 4)} logged in</p>
+          </div>
+        ) : (
+          <button onClick={requestAuth}>Connect Wallet</button>
+        )}
+      </div>
+      
       <div className="card">
         <button onClick={() => setCount(count => count + 1)}>count is {count}</button>
         <p>
@@ -56,7 +75,13 @@ function App(): React.ReactElement {
         <div style={{ marginTop: '10px' }}>
           <h3>Current Spell:</h3>
           <pre>{code}</pre>
-          <RunControls code={code} maze={mazeData} position={playerPos} onPositionChange={setPlayerPos} />
+          <RunControls 
+            code={code} 
+            maze={mazeData} 
+            position={playerPos} 
+            onPositionChange={setPlayerPos}
+            onSuccess={(code) => address && saveProgress(1, true, code)} 
+          />
         </div>
       </div>
 

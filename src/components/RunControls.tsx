@@ -15,6 +15,8 @@ interface RunControlsProps {
   position: Position;
   /** Callback when position changes */
   onPositionChange: (pos: Position) => void;
+  /** Optional callback to save progress */
+  onSuccess?: (code: string) => void;
 }
 
 /**
@@ -25,6 +27,7 @@ export const RunControls: React.FC<RunControlsProps> = ({
   maze,
   position,
   onPositionChange,
+  onSuccess,
 }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<RunnerResult | null>(null);
@@ -51,6 +54,10 @@ export const RunControls: React.FC<RunControlsProps> = ({
           
           if (runResult === 'success') {
             console.log('Success! 🎉');
+            
+            if (onSuccess) {
+              onSuccess(code);
+            }
           } else {
             const dungeonElement = document.querySelector('.dungeon-container');
             if (dungeonElement) {
