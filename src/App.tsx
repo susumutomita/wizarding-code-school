@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg';
 import './App.css';
 import { EditorPane } from './components/EditorPane';
 import { DungeonView } from './components/DungeonView';
+import { RunControls } from './components/RunControls';
 import mazeData from './data/maze-01.json';
 
 function App(): React.ReactElement {
@@ -55,6 +56,7 @@ function App(): React.ReactElement {
         <div style={{ marginTop: '10px' }}>
           <h3>Current Spell:</h3>
           <pre>{code}</pre>
+          <RunControls code={code} maze={mazeData} position={playerPos} onPositionChange={setPlayerPos} />
         </div>
       </div>
 
