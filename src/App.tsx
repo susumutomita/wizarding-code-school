@@ -7,13 +7,18 @@ import { DungeonView } from './components/DungeonView';
 import { RunControls } from './components/RunControls';
 import { useWalletAuth } from './hooks/useWalletAuth';
 import { useProgress } from './hooks/useProgress';
+import { useHintTimer } from './hooks/useHintTimer';
+import { HintBox } from './components/HintBox';
 import mazeData from './data/maze-01.json';
+import hints from './data/hints';
 
 function App(): React.ReactElement {
   const [count, setCount] = useState(0);
   const [code, setCode] = useState('// Write your spell here\nmoveForward();');
   
   const { address, requestAuth } = useWalletAuth();
+  
+  const { currentHint, dismissHint, nextHint, resetTimer } = useHintTimer(hints.chapter1, 10000);
   
   // Player position state
   const [playerPos, setPlayerPos] = useState({ x: 1, y: 1 }); // Default to start position
@@ -71,7 +76,7 @@ function App(): React.ReactElement {
 
       <div style={{ margin: '20px 0' }}>
         <h2>Spell Editor</h2>
-        <EditorPane code={code} onChange={setCode} />
+        <EditorPane code={code} onChange={setCode} onActivity={resetTimer} />
         <div style={{ marginTop: '10px' }}>
           <h3>Current Spell:</h3>
           <pre>{code}</pre>
@@ -84,6 +89,13 @@ function App(): React.ReactElement {
           />
         </div>
       </div>
+      
+      {/* Hint System */}
+      <HintBox 
+        hint={currentHint}
+        onDismiss={dismissHint}
+        onNext={nextHint}
+      />
 
       <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
     </>
