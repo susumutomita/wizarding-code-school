@@ -12,6 +12,9 @@ import { useWalletAuth } from './hooks/useWalletAuth';
 import { useProgress } from './hooks/useProgress';
 import { useHintTimer } from './hooks/useHintTimer';
 
+// 自動保存のスロットリング時間（ミリ秒）
+const AUTOSAVE_DEBOUNCE_MS = 1000;
+
 type AnimationState = 'success' | 'failure' | 'wall-collision' | null;
 
 enum AppScreen {
@@ -26,7 +29,7 @@ function App(): React.ReactElement {
   const { address } = useWalletAuth();
 
   // Chapter and progress management
-  const { currentChapter, completeChapter, navigateToChapter, getSavedCode, progress } =
+  const { currentChapter, completeChapter, navigateToChapter, getSavedCode, progress, saveCodeProgress } =
     useProgress(address || undefined);
 
   // UI state
@@ -34,6 +37,9 @@ function App(): React.ReactElement {
   const [code, setCode] = useState<string>('// Write your spell here\nmoveRight();');
   const [showHints, setShowHints] = useState<boolean>(false);
   const [animationState, setAnimationState] = useState<AnimationState>(null);
+
+  // 自動保存タイマー用のID
+  const [saveTimeoutId, setSaveTimeoutId] = useState<number | null>(null);
 
   // Player position state
   const [playerPos, setPlayerPos] = useState({ x: 1, y: 1 });
@@ -53,7 +59,7 @@ function App(): React.ReactElement {
       // Use saved code or a starter template
       setCode(
         savedCode ||
-          `// ${currentChapter.title}
+        `// ${currentChapter.title}
 // Write your spell here
 ${currentChapter.allowedCommands[0]}();`
       );
@@ -70,6 +76,51 @@ ${currentChapter.allowedCommands[0]}();`
       setShowHints(false);
     }
   }, [currentChapter, getSavedCode]);
+
+  // コードの変更を処理し、自動保存する関数
+  const handleCodeChange = (newCode: string): void => {
+    setCode(newCode);
+
+    // 既存のタイマーをクリアする
+    if (saveTimeoutId !== null) {
+      window.clearTimeout(saveTimeoutId);
+    }
+
+    // スロットリングした自動保存のタイマーをセット
+    const timeoutId = window.setTimeout(() => {
+      if (currentChapter) {
+        saveCodeProgress(currentChapter.id, newCode);
+      }
+    }, AUTOSAVE_DEBOUNCE_MS);
+
+    setSaveTimeoutId(timeoutId);
+  };
+
+  // ページ離脱時の保存
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // 未保存のコードを即座に保存
+      if (currentChapter) {
+        saveCodeProgress(currentChapter.id, code);
+      }
+    };
+
+    // 画面遷移前のイベントをリッスン
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [currentChapter, code, saveCodeProgress]);
+
+  // 画面遷移時にも保存する
+  useEffect(() => {
+    return () => {
+      if (currentChapter) {
+        saveCodeProgress(currentChapter.id, code);
+      }
+    };
+  }, [currentScreen, currentChapter, code, saveCodeProgress]);
 
   // Determine completed chapters for the selector
   const completedChapterIds = Object.entries(progress.chapters)
@@ -120,6 +171,10 @@ ${currentChapter.allowedCommands[0]}();`
               currentChapterId={currentChapter.id}
               completedChapters={completedChapterIds}
               onSelectChapter={id => {
+                // チャプター切り替え前に現在のコードを保存
+                if (currentChapter) {
+                  saveCodeProgress(currentChapter.id, code);
+                }
                 navigateToChapter(id);
                 setCurrentScreen(AppScreen.CHAPTER_INTRO);
               }}
@@ -158,7 +213,11 @@ ${currentChapter.allowedCommands[0]}();`
 
                 <button
                   className="back-button"
-                  onClick={() => setCurrentScreen(AppScreen.CHAPTER_SELECT)}
+                  onClick={() => {
+                    // チャプター選択に戻る前に現在のコードを保存
+                    saveCodeProgress(currentChapter.id, code);
+                    setCurrentScreen(AppScreen.CHAPTER_SELECT);
+                  }}
                 >
                   Back to Chapter Select
                 </button>
@@ -167,7 +226,7 @@ ${currentChapter.allowedCommands[0]}();`
               <div className="editor-area">
                 <EditorPane
                   code={code}
-                  onChange={setCode}
+                  onChange={handleCodeChange}
                   onActivity={resetTimer}
                   allowedCommands={currentChapter.allowedCommands}
                 />
