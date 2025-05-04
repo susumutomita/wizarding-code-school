@@ -51,10 +51,20 @@ jobs:
           echo "Found Mermaid diagrams in: $MERMAID_FILES"
           echo "mermaid_files=$MERMAID_FILES" >> $GITHUB_OUTPUT
 
+      - name: Setup Node.js
+        if: steps.find-mermaid.outputs.mermaid_files != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Mermaid CLI
+        if: steps.find-mermaid.outputs.mermaid_files != ''
+        run: npm install -g @mermaid-js/mermaid-cli
+
       - name: Validate Mermaid Syntax
         if: steps.find-mermaid.outputs.mermaid_files != ''
         run: |
           for file in ${{ steps.find-mermaid.outputs.mermaid_files }}; do
             echo "Validating Mermaid syntax in $file"
-            mermaid --input "$file" --output /dev/null
+            npx mmdc --input "$file" --outputFormat svg --output /tmp/output.svg
           done
