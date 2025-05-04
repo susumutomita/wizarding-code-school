@@ -1,4 +1,14 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# 変更されたファイルを取得
+changed_files=$(git diff --cached --name-only)
+
+# マークダウンファイルが変更されている場合のみMermaid検証を実行
+if echo "$changed_files" | grep -q "\.md$"; then
+  echo "Markdown files changed, validating Mermaid diagrams..."
+  pnpm markdown:validate-mermaid || exit 1
+fi
+
+# lint-stagedを実行
 pnpm lint-staged
