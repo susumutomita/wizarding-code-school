@@ -90,6 +90,56 @@
   transition: all 0.3s ease;
 }
 
+/* Torch styles - unlit and lit */
+.cell.torch {
+  background-color: #000;
+  /* Black background */
+  position: relative;
+}
+
+.cell.torch.unlit::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  border-radius: 20%;
+  background-color: #553311;
+  /* Brown/dark orange for unlit torch */
+  transition: all 0.3s ease;
+}
+
+.cell.torch.lit::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  border-radius: 20%;
+  background-color: #ff7700;
+  /* Bright orange for lit torch */
+  box-shadow: 0 0 15px #ff9900;
+  /* Glow effect */
+  animation: torch-flicker 1s infinite alternate;
+  transition: all 0.3s ease;
+}
+
+@keyframes torch-flicker {
+  0% {
+    box-shadow: 0 0 15px #ff9900;
+    opacity: 0.9;
+  }
+
+  100% {
+    box-shadow: 0 0 20px #ffbb00;
+    opacity: 1;
+  }
+}
+
 .debug-info {
   margin-top: 10px;
   padding: 10px;

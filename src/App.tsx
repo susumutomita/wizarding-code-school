@@ -11,6 +11,7 @@ import { ChapterSuccess } from './components/ChapterSuccess';
 import { useWalletAuth } from './hooks/useWalletAuth';
 import { useProgress } from './hooks/useProgress';
 import { useHintTimer } from './hooks/useHintTimer';
+import { TorchState } from './types';
 
 // 自動保存のスロットリング時間（ミリ秒）
 const AUTOSAVE_DEBOUNCE_MS = 1000;
@@ -29,8 +30,14 @@ function App(): React.ReactElement {
   const { address } = useWalletAuth();
 
   // Chapter and progress management
-  const { currentChapter, completeChapter, navigateToChapter, getSavedCode, progress, saveCodeProgress } =
-    useProgress(address || undefined);
+  const {
+    currentChapter,
+    completeChapter,
+    navigateToChapter,
+    getSavedCode,
+    progress,
+    saveCodeProgress,
+  } = useProgress(address || undefined);
 
   // UI state
   const [currentScreen, setCurrentScreen] = useState<AppScreen>(AppScreen.CHAPTER_SELECT);
@@ -44,6 +51,9 @@ function App(): React.ReactElement {
   // Player position state
   const [playerPos, setPlayerPos] = useState({ x: 1, y: 1 });
 
+  // Torch states
+  const [torches, setTorches] = useState<TorchState[]>([]);
+
   // Hint system
   const { currentHint, nextHint, dismissHint, resetTimer } = useHintTimer(
     currentChapter?.hints || [],
@@ -51,7 +61,7 @@ function App(): React.ReactElement {
   );
 
   // Load initial code when changing chapters
-  useEffect(() => {
+  useEffect((): void => {
     if (currentChapter) {
       // See if there's saved code for this chapter
       const savedCode = getSavedCode(currentChapter.id);
@@ -59,7 +69,7 @@ function App(): React.ReactElement {
       // Use saved code or a starter template
       setCode(
         savedCode ||
-        `// ${currentChapter.title}
+          `// ${currentChapter.title}
 // Write your spell here
 ${currentChapter.allowedCommands[0]}();`
       );
@@ -72,10 +82,18 @@ ${currentChapter.allowedCommands[0]}();`
       // Reset animation state
       setAnimationState(null);
 
+      // Reset torches
+      setTorches([]);
+
       // Reset hints
       setShowHints(false);
     }
   }, [currentChapter, getSavedCode]);
+
+  // Handle torch updates
+  const handleTorchUpdate = (updatedTorches: TorchState[]): void => {
+    setTorches(updatedTorches);
+  };
 
   // コードの変更を処理し、自動保存する関数
   const handleCodeChange = (newCode: string): void => {
@@ -98,7 +116,7 @@ ${currentChapter.allowedCommands[0]}();`
 
   // ページ離脱時の保存
   useEffect(() => {
-    const handleBeforeUnload = () => {
+    const handleBeforeUnload = (): void => {
       // 未保存のコードを即座に保存
       if (currentChapter) {
         saveCodeProgress(currentChapter.id, code);
@@ -108,14 +126,14 @@ ${currentChapter.allowedCommands[0]}();`
     // 画面遷移前のイベントをリッスン
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    return () => {
+    return (): void => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [currentChapter, code, saveCodeProgress]);
 
   // 画面遷移時にも保存する
   useEffect(() => {
-    return () => {
+    return (): void => {
       if (currentChapter) {
         saveCodeProgress(currentChapter.id, code);
       }
@@ -170,7 +188,7 @@ ${currentChapter.allowedCommands[0]}();`
             <ChapterSelector
               currentChapterId={currentChapter.id}
               completedChapters={completedChapterIds}
-              onSelectChapter={id => {
+              onSelectChapter={(id: string): void => {
                 // チャプター切り替え前に現在のコードを保存
                 if (currentChapter) {
                   saveCodeProgress(currentChapter.id, code);
@@ -185,7 +203,7 @@ ${currentChapter.allowedCommands[0]}();`
         {currentScreen === AppScreen.CHAPTER_INTRO && (
           <ChapterIntro
             chapter={currentChapter}
-            onStart={() => setCurrentScreen(AppScreen.CODING)}
+            onStart={(): void => setCurrentScreen(AppScreen.CODING)}
           />
         )}
 
@@ -199,6 +217,8 @@ ${currentChapter.allowedCommands[0]}();`
                   pos={playerPos}
                   onPosChange={setPlayerPos}
                   animationState={animationState}
+                  torches={torches}
+                  onTorchUpdate={handleTorchUpdate}
                 />
 
                 <RunControls
@@ -209,11 +229,13 @@ ${currentChapter.allowedCommands[0]}();`
                   onSuccess={handleChapterSuccess}
                   onShowHint={handleShowHint}
                   onAnimationState={setAnimationState}
+                  torches={torches}
+                  onTorchUpdate={handleTorchUpdate}
                 />
 
                 <button
                   className="back-button"
-                  onClick={() => {
+                  onClick={(): void => {
                     // チャプター選択に戻る前に現在のコードを保存
                     saveCodeProgress(currentChapter.id, code);
                     setCurrentScreen(AppScreen.CHAPTER_SELECT);
@@ -237,7 +259,7 @@ ${currentChapter.allowedCommands[0]}();`
             {showHints && (
               <HintBox
                 hint={currentHint}
-                onDismiss={() => {
+                onDismiss={(): void => {
                   dismissHint();
                   setShowHints(false);
                 }}
