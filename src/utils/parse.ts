@@ -136,6 +136,11 @@ export function parse(
         'canMoveLeft',
         'canMoveRight',
         'lightTorch',
+        'let',
+        'var',
+        'const',
+        'function',
+        'for',
         `"use strict";
         try {
           ${code}
@@ -157,7 +162,12 @@ export function parse(
         canMoveDown,
         canMoveLeft,
         canMoveRight,
-        lightTorch
+        lightTorch,
+        undefined, // let (handled by JavaScript engine)
+        undefined, // var (handled by JavaScript engine)
+        undefined, // const (handled by JavaScript engine)
+        undefined, // function (handled by JavaScript engine)
+        undefined // for (handled by JavaScript engine)
       );
 
       // Check if too many commands were generated (possible infinite loop)

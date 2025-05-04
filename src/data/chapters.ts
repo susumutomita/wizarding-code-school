@@ -1,6 +1,7 @@
 import maze01 from './maze-01.json';
 import maze02 from './maze-02.json';
 import mazeChapter3 from './maze-chapter3.json';
+import mazeChapter4 from './maze-chapter4.json';
 
 export interface Chapter {
   id: string;
@@ -134,6 +135,7 @@ while (canMoveRight()) {
       'if',
       'else',
     ],
+    nextChapterId: 'chapter4',
     introductoryText:
       "Welcome to Potions class! In this advanced lesson, you'll need to make decisions based on the maze layout. Unlike previous mazes, this one has multiple paths and dead ends. You'll need to use conditional logic (if/else statements) to check which direction you can move and choose the correct path. For example, you might need to write code like: if (canMoveRight()) { moveRight(); } else { moveDown(); }",
     sampleSolution: `// Example of using if/else for decision making
@@ -156,6 +158,68 @@ if (canMoveRight()) {
 }`,
     successMessage:
       "Incredible! Your potion is perfect! You've mastered the art of decision making in your spells!",
+  },
+  chapter4: {
+    id: 'chapter4',
+    title: 'Chapter 4: Enchantment Workshop - Variables and Functions',
+    description:
+      'Learn to create and use variables and functions in your spells for more powerful magic.',
+    maze: mazeChapter4,
+    startPosition: findStartPosition(mazeChapter4),
+    hints: [
+      'Variables can store values that you want to use multiple times.',
+      'Try using "let steps = 3;" to create a variable.',
+      'Functions let you create reusable blocks of code.',
+      'Define a function with "function moveInSquare() { ... }"',
+      'Call your function by name with parentheses: "moveInSquare()"',
+      'Functions can take parameters: "function moveSteps(count) { ... }"',
+      'You can use variables inside functions to track state.',
+    ],
+    requiredCommands: ['function', 'let', 'var', 'const'],
+    allowedCommands: [
+      'moveUp',
+      'moveDown',
+      'moveLeft',
+      'moveRight',
+      'canMoveUp',
+      'canMoveDown',
+      'canMoveLeft',
+      'canMoveRight',
+      'if',
+      'else',
+      'while',
+      'function',
+      'let',
+      'var',
+      'const',
+    ],
+    introductoryText:
+      "Welcome to the Enchantment Workshop! In this advanced lesson, you'll learn to create more powerful and efficient spells using variables and functions. Variables allow you to store and reuse values, while functions let you create reusable blocks of code. These concepts are essential for any wizard who wants to create complex and elegant spells without repeating themselves. For example, instead of writing the same movement pattern multiple times, you can define it once as a function and call it whenever needed.",
+    sampleSolution: `// Define a function to move in a specific pattern
+function moveRight3Times() {
+  moveRight();
+  moveRight();
+  moveRight();
+}
+
+let moveCount = 0;
+
+function moveDownAndCount(steps) {
+  for (let i = 0; i < steps; i++) {
+    moveDown();
+    moveCount++;
+  }
+}
+
+moveRight3Times();
+moveDownAndCount(2);
+
+if (moveCount >= 2) {
+  moveRight();
+  moveDown();
+}`,
+    successMessage:
+      "Magnificent! You've mastered the art of creating variables and functions in your spells. Your magic is becoming more powerful and elegant!",
   },
 };
 

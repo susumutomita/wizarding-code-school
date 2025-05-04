@@ -28,18 +28,49 @@ Parsed `Command[]` array with movement directives that can be executed by the Ru
 | Command                    | Description                           | Example                   |
 | -------------------------- | ------------------------------------- | ------------------------- |
 | `while(condition) { ... }` | Repeat block until condition is false | `while(canMoveRight()) {` |
-|                            |                                       | `  moveRight();`          |
+|                            |                                       | `moveRight();`            |
 |                            |                                       | `}`                       |
+| `if(condition) { ... }`    | Execute block if condition is true    | `if(canMoveRight()) {`    |
+|                            |                                       | `moveRight();`            |
+|                            |                                       | `}`                       |
+| `else { ... }`             | Execute if previous if was false      | `else {`                  |
+|                            |                                       | `moveDown();`             |
+|                            |                                       | `}`                       |
+
+## Variables and Functions
+
+| Command                     | Description                       | Example                     |
+| --------------------------- | --------------------------------- | --------------------------- |
+| `let variable = value;`     | Create a variable                 | `let steps = 3;`            |
+| `const variable = value;`   | Create a constant                 | `const dir = 'right';`      |
+| `function name() { ... }`   | Define a reusable function        | `function moveSquare(){`    |
+|                             |                                   | `moveRight();`              |
+|                             |                                   | `moveDown();`               |
+|                             |                                   | `}`                         |
+| `function name(param){...}` | Define a function with parameters | `function move(steps){`     |
+|                             |                                   | `for(let i=0;i<steps;i++){` |
+|                             |                                   | `moveRight();`              |
+|                             |                                   | `}`                         |
+|                             |                                   | `}`                         |
 
 ## Formal Grammar
 
 ```bnf
 <spell>       ::= <statement>*
-<statement>   ::= <move-command> | <control-flow>
+<statement>   ::= <move-command> | <control-flow> | <variable-decl> | <function-decl> | <function-call>
 <move-command> ::= "moveUp()" | "moveDown()" | "moveLeft()" | "moveRight()"
-<control-flow> ::= <while-loop>
+<control-flow> ::= <while-loop> | <if-statement>
 <while-loop>  ::= "while" "(" <condition> ")" "{" <statement>* "}"
-<condition>   ::= "canMoveUp()" | "canMoveDown()" | "canMoveLeft()" | "canMoveRight()"
+<if-statement> ::= "if" "(" <condition> ")" "{" <statement>* "}" ["else" "{" <statement>* "}"]
+<condition>   ::= "canMoveUp()" | "canMoveDown()" | "canMoveLeft()" | "canMoveRight()" | <expression>
+<variable-decl> ::= ("let" | "const" | "var") <identifier> "=" <expression> ";"
+<function-decl> ::= "function" <identifier> "(" [<param-list>] ")" "{" <statement>* "}"
+<function-call> ::= <identifier> "(" [<arg-list>] ")" ";"
+<param-list>  ::= <identifier> ["," <identifier>]*
+<arg-list>    ::= <expression> ["," <expression>]*
+<expression>  ::= <literal> | <identifier> | <binary-op>
+<binary-op>   ::= <expression> <operator> <expression>
+<operator>    ::= "+" | "-" | "*" | "/" | ">" | "<" | ">=" | "<=" | "==" | "!="
 ```
 
 ## Sample Spells
@@ -87,22 +118,26 @@ moveRight();
 
 ## Common Errors and Fixes
 
-| Error               | Message                                       | Fix                                  |
-| ------------------- | --------------------------------------------- | ------------------------------------ |
-| Unknown command     | `SyntaxError: Unknown command 'move()'`       | Use one of the defined commands:     |
-|                     |                                               | moveUp(), moveDown(), moveLeft(),    |
-|                     |                                               | moveRight()                          |
-| Missing parentheses | `SyntaxError: Expected '(' after 'moveRight'` | Make sure to include parentheses:    |
-|                     |                                               | `moveRight()`                        |
-| Unclosed block      | `SyntaxError: Missing closing '}'`            | Ensure all code blocks have matching |
-|                     |                                               | braces                               |
-| Hitting a wall      | `Runtime Error: Cannot move into wall at      | Check maze boundaries before moving  |
-|                     | position (x,y)`                               |                                      |
+| Error               | Message                                | Fix                            |
+| ------------------- | -------------------------------------- | ------------------------------ |
+| Unknown command     | `SyntaxError: Unknown command`         | Use defined commands:          |
+|                     |                                        | moveUp(), moveDown(), etc.     |
+| Missing parentheses | `SyntaxError: Expected '('`            | Include parentheses:           |
+|                     |                                        | `moveRight()`                  |
+| Unclosed block      | `SyntaxError: Missing '}'`             | Ensure matching braces         |
+| Hitting a wall      | `Runtime Error: Cannot move into wall` | Check boundaries before moving |
 
-## Extension Points
+## Advanced Features
 
-Future versions will support:
+The spell language now supports:
 
-- Functions with parameters: `move(direction, steps)`
-- Conditionals: `if (isGoalAhead()) { moveForward(); }`
 - Variables: `let steps = 3;`
+- Functions with parameters: `function move(steps){...}`
+- Conditionals: `if(canMoveRight()){moveRight();}`
+- Loops: `while(canMoveRight()){moveRight();}`
+
+Future versions may support additional features like:
+
+- Arrays and objects
+- More complex expressions
+- Custom spell effects

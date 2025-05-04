@@ -55,7 +55,7 @@ C4Context
 
 | Module          | Purpose                   | Public API                                       |
 | --------------- | ------------------------- | ------------------------------------------------ |
-| EditorPane      | Code editing interface    | `<EditorPane code={string} `                     |
+| EditorPane      | Code editing interface    | `<EditorPane code={string}`                      |
 |                 |                           | `onChange={(v: string) => void} />`              |
 | DungeonView     | Renders maze and player   | `<DungeonView maze={number[][]}`                 |
 |                 |                           | `pos={{x: number, y: number}} />`                |

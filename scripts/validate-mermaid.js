@@ -59,9 +59,12 @@ function validateMermaidSyntax(block) {
   fs.writeFileSync(tempFile, block.content);
 
   try {
-    execSync(`npx -p @mermaid-js/mermaid-cli mmdc --input ${tempFile} --outputFormat null`, {
-      stdio: ['ignore', 'ignore', 'pipe'],
-    });
+    execSync(
+      `npx -p @mermaid-js/mermaid-cli mmdc --input ${tempFile} --outputFormat svg --output ${tempFile}.svg`,
+      {
+        stdio: ['ignore', 'ignore', 'pipe'],
+      }
+    );
     return true;
   } catch (error) {
     console.error(`Error in file ${block.filePath}:`);
@@ -70,6 +73,9 @@ function validateMermaidSyntax(block) {
   } finally {
     if (fs.existsSync(tempFile)) {
       fs.unlinkSync(tempFile);
+    }
+    if (fs.existsSync(`${tempFile}.svg`)) {
+      fs.unlinkSync(`${tempFile}.svg`);
     }
   }
 }

@@ -96,7 +96,7 @@ The packaged Mini-App will be available in the `dist/` directory, ready for depl
 ## Architecture
 
 ```mermaid
-flowchart LR
+graph LR
     Editor["Monaco Editor\n(Spell Writing)"] --> Parser["Command Parser"]
     Parser --> Runner["Spell Runner"]
     Runner --> DungeonView["Dungeon View"]
