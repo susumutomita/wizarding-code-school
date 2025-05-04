@@ -1,4 +1,5 @@
 import maze01 from './maze-01.json';
+import maze02 from './maze-02.json';
 
 export interface Chapter {
   id: string;
@@ -64,13 +65,14 @@ moveDown();`,
     id: 'chapter2',
     title: 'Chapter 2: Control Flow',
     description: 'Learn to use loops in your spells for more efficient navigation.',
-    maze: maze01, // For now, using the same maze - we'd create new mazes for each chapter
-    startPosition: findStartPosition(maze01),
+    maze: maze02, // Custom maze designed for teaching loops
+    startPosition: findStartPosition(maze02),
     hints: [
-      'Remember you can combine different movement commands.',
-      'Try using a while loop with canMoveRight() to move as far as possible.',
-      'Loops can help you write more efficient code.',
+      'Notice the long corridors in this maze. Using individual commands would be tedious.',
+      'Try using a while loop with canMoveRight() to move through long corridors efficiently.',
       'The syntax for a while loop is: while (condition) { actions }',
+      'You can use while loops with different conditions like canMoveDown() too.',
+      'Combine multiple loops to navigate different sections of the maze.',
     ],
     requiredCommands: ['while', 'canMoveRight'],
     allowedCommands: [
@@ -85,15 +87,24 @@ moveDown();`,
     ],
     nextChapterId: 'chapter3',
     introductoryText:
-      "Well done on completing your first lesson! Now, let's learn about control flow with while loops. These allow you to repeat actions until a certain condition is met.",
-    sampleSolution: `// Use a while loop to move right as far as possible
+      "Well done on completing your first lesson! Now, let's learn about control flow with while loops. These allow you to repeat actions until a certain condition is met. In this maze, you'll encounter long corridors where using individual movement commands would be inefficient. By using while loops with conditions like canMoveRight(), you can write much more efficient spells!",
+    sampleSolution: `// Move right until hitting a wall
 while (canMoveRight()) {
   moveRight();
 }
 
-// Then navigate down and continue
+// Move down one step
 moveDown();
-moveDown();`,
+
+while (canMoveLeft()) {
+  moveLeft();
+}
+
+moveDown();
+
+while (canMoveRight()) {
+  moveRight();
+}`,
     successMessage: "Excellent work! You've learned to use control flow in your spells!",
   },
   chapter3: {
