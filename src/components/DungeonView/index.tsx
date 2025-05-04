@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { TileType, TorchState } from '../../types';
 import './styles.css';
 
 /**
@@ -13,7 +14,7 @@ interface Position {
  * Props for the DungeonView component
  */
 interface DungeonViewProps {
-  /** 2D array representing the maze (0=empty, 1=wall, 2=start, 3=goal) */
+  /** 2D array representing the maze (0=empty, 1=wall, 2=start, 3=goal, 4=torch) */
   maze: number[][];
   /** Current position of the player */
   pos: Position;
@@ -23,6 +24,10 @@ interface DungeonViewProps {
   debugMode?: boolean;
   /** Animation state for success/failure/wall-collision */
   animationState?: 'success' | 'failure' | 'wall-collision' | null;
+  /** Array of torch states for tracking lit torches */
+  torches?: TorchState[];
+  /** Optional callback when a torch is lit */
+  onTorchUpdate?: (torches: TorchState[]) => void;
 }
 
 /**
@@ -35,10 +40,36 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
   onPosChange,
   debugMode = false,
   animationState = null,
+  torches = [],
+  onTorchUpdate,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pathTraces, setPathTraces] = useState<Position[]>([]);
   const [localPos, setLocalPos] = useState<Position>(pos);
+  const [localTorches, setLocalTorches] = useState<TorchState[]>(torches);
+
+  // Initialize torches if none provided
+  useEffect(() => {
+    if (torches.length === 0) {
+      const initialTorches: TorchState[] = [];
+
+      // Scan maze for torch tiles and initialize them as unlit
+      for (let y = 0; y < maze.length; y++) {
+        for (let x = 0; x < maze[y].length; x++) {
+          if (maze[y][x] === TileType.TORCH) {
+            initialTorches.push({ position: { x, y }, isLit: false });
+          }
+        }
+      }
+
+      setLocalTorches(initialTorches);
+      if (onTorchUpdate) {
+        onTorchUpdate(initialTorches);
+      }
+    } else {
+      setLocalTorches(torches);
+    }
+  }, [maze, torches, onTorchUpdate]);
 
   useEffect(() => {
     setLocalPos(pos);
@@ -56,7 +87,7 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
         newY < maze.length &&
         newX >= 0 &&
         newX < maze[0].length &&
-        maze[newY][newX] !== 1 // Not a wall
+        maze[newY][newX] !== TileType.WALL // Not a wall
       ) {
         const newPos = { x: newX, y: newY };
         setLocalPos(newPos);
@@ -82,6 +113,22 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
         case 'd':
           handleMovement(1, 0); // Right
           break;
+        case 't': // Debug key to light torch
+          if (maze[localPos.y][localPos.x] === TileType.TORCH) {
+            const updatedTorches = [...localTorches];
+            const torchIndex = updatedTorches.findIndex(
+              torch => torch.position.x === localPos.x && torch.position.y === localPos.y
+            );
+
+            if (torchIndex !== -1) {
+              updatedTorches[torchIndex].isLit = true;
+              setLocalTorches(updatedTorches);
+              if (onTorchUpdate) {
+                onTorchUpdate(updatedTorches);
+              }
+            }
+          }
+          break;
       }
     };
 
@@ -90,7 +137,7 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
     return (): void => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [debugMode, localPos, maze, onPosChange]);
+  }, [debugMode, localPos, maze, onPosChange, localTorches, onTorchUpdate]);
 
   useEffect(() => {
     // Add current position to path traces
@@ -107,20 +154,28 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
     setPathTraces([]);
   }, [maze]);
 
+  const isTorchLit = (rowIdx: number, colIdx: number): boolean => {
+    return localTorches.some(
+      torch => torch.position.x === colIdx && torch.position.y === rowIdx && torch.isLit
+    );
+  };
+
   const getCellClass = (cellValue: number, rowIdx: number, colIdx: number): string => {
     if (rowIdx === localPos.y && colIdx === localPos.x) {
       return 'cell player';
     }
 
     switch (cellValue) {
-      case 0:
+      case TileType.EMPTY:
         return 'cell floor';
-      case 1:
+      case TileType.WALL:
         return 'cell wall';
-      case 2:
+      case TileType.START:
         return 'cell start';
-      case 3:
+      case TileType.GOAL:
         return 'cell goal';
+      case TileType.TORCH:
+        return isTorchLit(rowIdx, colIdx) ? 'cell torch lit' : 'cell torch unlit';
       default:
         return 'cell floor';
     }
@@ -169,9 +224,12 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
 
       {debugMode && (
         <div className="debug-info">
-          <p>Debug Mode: Use WASD keys to move</p>
+          <p>Debug Mode: Use WASD keys to move, T to light torch</p>
           <p>
             Position: ({localPos.x}, {localPos.y})
+          </p>
+          <p>
+            Lit Torches: {localTorches.filter(t => t.isLit).length} / {localTorches.length}
           </p>
           {animationState && <div>Animation: {animationState}</div>}
         </div>

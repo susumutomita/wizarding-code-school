@@ -1,4 +1,4 @@
-import { Command } from '../types';
+import { Command, TileType } from '../types';
 
 /**
  * Custom error for spell runtime issues
@@ -33,7 +33,7 @@ export function parse(
       newPos.y < maze.length &&
       newPos.x >= 0 &&
       newPos.x < maze[0].length &&
-      maze[newPos.y][newPos.x] !== 1 // Not a wall
+      maze[newPos.y][newPos.x] !== TileType.WALL // Not a wall
     );
   };
 
@@ -44,7 +44,7 @@ export function parse(
       newPos.y < maze.length &&
       newPos.x >= 0 &&
       newPos.x < maze[0].length &&
-      maze[newPos.y][newPos.x] !== 1 // Not a wall
+      maze[newPos.y][newPos.x] !== TileType.WALL // Not a wall
     );
   };
 
@@ -55,7 +55,7 @@ export function parse(
       newPos.y < maze.length &&
       newPos.x >= 0 &&
       newPos.x < maze[0].length &&
-      maze[newPos.y][newPos.x] !== 1 // Not a wall
+      maze[newPos.y][newPos.x] !== TileType.WALL // Not a wall
     );
   };
 
@@ -66,7 +66,18 @@ export function parse(
       newPos.y < maze.length &&
       newPos.x >= 0 &&
       newPos.x < maze[0].length &&
-      maze[newPos.y][newPos.x] !== 1 // Not a wall
+      maze[newPos.y][newPos.x] !== TileType.WALL // Not a wall
+    );
+  };
+
+  // Check if the current position is on a torch
+  const isOnTorch = (): boolean => {
+    return (
+      currentPos.y >= 0 &&
+      currentPos.y < maze.length &&
+      currentPos.x >= 0 &&
+      currentPos.x < maze[0].length &&
+      maze[currentPos.y][currentPos.x] === TileType.TORCH
     );
   };
 
@@ -93,6 +104,21 @@ export function parse(
     currentPos.x += 1;
   };
 
+  const lightTorch = (): void => {
+    if (!isOnTorch()) {
+      throw new SpellRuntimeError(
+        'Cannot light a torch here. You must be standing on a torch tile.'
+      );
+    }
+    // Add a special command for lighting a torch
+    movements.push({
+      dx: 0,
+      dy: 0,
+      action: 'light-torch',
+      actionPosition: { ...currentPos },
+    });
+  };
+
   // Create a safe execution context with limited functions
   const safeExecute = (code: string): Command[] => {
     try {
@@ -109,6 +135,7 @@ export function parse(
         'canMoveDown',
         'canMoveLeft',
         'canMoveRight',
+        'lightTorch',
         `"use strict";
         try {
           ${code}
@@ -129,7 +156,8 @@ export function parse(
         canMoveUp,
         canMoveDown,
         canMoveLeft,
-        canMoveRight
+        canMoveRight,
+        lightTorch
       );
 
       // Check if too many commands were generated (possible infinite loop)

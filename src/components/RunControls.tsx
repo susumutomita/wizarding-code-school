@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { parse, SpellRuntimeError } from '../utils/parse';
-import { run, Position, RunnerResult } from '../utils/runner';
+import { run, RunnerResult } from '../utils/runner';
+import { TorchState, Position } from '../types';
 
 /**
  * Props for the RunControls component
@@ -20,6 +21,10 @@ interface RunControlsProps {
   onShowHint?: () => void;
   /** Optional callback for animation state */
   onAnimationState?: (state: 'success' | 'failure' | 'wall-collision' | null) => void;
+  /** Optional torches array for tracking torch states */
+  torches?: TorchState[];
+  /** Optional callback for updating torch states */
+  onTorchUpdate?: (torches: TorchState[]) => void;
 }
 
 /**
@@ -33,12 +38,20 @@ export const RunControls: React.FC<RunControlsProps> = ({
   onSuccess,
   onShowHint,
   onAnimationState,
+  torches = [],
+  onTorchUpdate,
 }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<RunnerResult | null>(null);
   const [stopRunner, setStopRunner] = useState<(() => void) | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
+  const [localTorches, setLocalTorches] = useState<TorchState[]>(torches);
+
+  // Sync localTorches state with the torches prop when it changes
+  useEffect(() => {
+    setLocalTorches(torches);
+  }, [torches]);
 
   const resetPlayerPosition = (): void => {
     // Find the starting position (cell with value 2) in the maze
@@ -49,6 +62,18 @@ export const RunControls: React.FC<RunControlsProps> = ({
           return;
         }
       }
+    }
+  };
+
+  const resetTorches = (): void => {
+    // Reset all torches to unlit state
+    const resetTorchStates = localTorches.map(torch => ({
+      ...torch,
+      isLit: false,
+    }));
+    setLocalTorches(resetTorchStates);
+    if (onTorchUpdate) {
+      onTorchUpdate(resetTorchStates);
     }
   };
 
@@ -66,6 +91,9 @@ export const RunControls: React.FC<RunControlsProps> = ({
 
       // Reset player to starting position
       resetPlayerPosition();
+
+      // Reset torch states
+      resetTorches();
 
       // Parse the code to get commands
       const commands = parse(code, maze, position);
@@ -127,6 +155,13 @@ export const RunControls: React.FC<RunControlsProps> = ({
               }, 1500);
             }
           }
+        },
+        localTorches,
+        updatedTorches => {
+          setLocalTorches(updatedTorches);
+          if (onTorchUpdate) {
+            onTorchUpdate(updatedTorches);
+          }
         }
       );
 
@@ -169,6 +204,7 @@ export const RunControls: React.FC<RunControlsProps> = ({
 
   const handleReset = (): void => {
     resetPlayerPosition();
+    resetTorches();
     setResult(null);
     setErrorMessage(null);
 
@@ -224,6 +260,15 @@ export const RunControls: React.FC<RunControlsProps> = ({
               ❌
             </span>{' '}
             {errorMessage || 'Syntax error in your spell.'}
+          </div>
+        )}
+
+        {localTorches.length > 0 && !isRunning && (
+          <div className="torch-status">
+            <span role="img" aria-label="torch">
+              🔥
+            </span>
+            Torches: {localTorches.filter(torch => torch.isLit).length} / {localTorches.length} lit
           </div>
         )}
       </div>
