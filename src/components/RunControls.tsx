@@ -68,7 +68,7 @@ export const RunControls: React.FC<RunControlsProps> = ({
       resetPlayerPosition();
 
       // Parse the code to get commands
-      const commands = parse(code);
+      const commands = parse(code, maze, position);
 
       const runner = run(
         commands,

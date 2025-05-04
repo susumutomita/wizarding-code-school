@@ -18,31 +18,79 @@ export class SpellRuntimeError extends Error {
  * @throws SyntaxError for unknown commands or syntax issues
  * @throws SpellRuntimeError for runtime execution issues
  */
-export function parse(text: string): Command[] {
-  // Create a function to check if a move is possible in a given direction
-  // These functions will be available in the user's code
-  const canMoveUp = (): boolean => true;
-  const canMoveDown = (): boolean => true;
-  const canMoveLeft = (): boolean => true;
-  const canMoveRight = (): boolean => true;
+export function parse(
+  text: string,
+  maze: number[][],
+  initialPos: { x: number; y: number }
+): Command[] {
+  const currentPos = { ...initialPos };
+
+  // These functions will check if a move is possible in a given direction
+  const canMoveUp = (): boolean => {
+    const newPos = { x: currentPos.x, y: currentPos.y - 1 };
+    return (
+      newPos.y >= 0 &&
+      newPos.y < maze.length &&
+      newPos.x >= 0 &&
+      newPos.x < maze[0].length &&
+      maze[newPos.y][newPos.x] !== 1 // Not a wall
+    );
+  };
+
+  const canMoveDown = (): boolean => {
+    const newPos = { x: currentPos.x, y: currentPos.y + 1 };
+    return (
+      newPos.y >= 0 &&
+      newPos.y < maze.length &&
+      newPos.x >= 0 &&
+      newPos.x < maze[0].length &&
+      maze[newPos.y][newPos.x] !== 1 // Not a wall
+    );
+  };
+
+  const canMoveLeft = (): boolean => {
+    const newPos = { x: currentPos.x - 1, y: currentPos.y };
+    return (
+      newPos.y >= 0 &&
+      newPos.y < maze.length &&
+      newPos.x >= 0 &&
+      newPos.x < maze[0].length &&
+      maze[newPos.y][newPos.x] !== 1 // Not a wall
+    );
+  };
+
+  const canMoveRight = (): boolean => {
+    const newPos = { x: currentPos.x + 1, y: currentPos.y };
+    return (
+      newPos.y >= 0 &&
+      newPos.y < maze.length &&
+      newPos.x >= 0 &&
+      newPos.x < maze[0].length &&
+      maze[newPos.y][newPos.x] !== 1 // Not a wall
+    );
+  };
 
   // Create functions that will record movement commands
   const movements: Command[] = [];
 
   const moveUp = (): void => {
     movements.push({ dx: 0, dy: -1 });
+    currentPos.y -= 1;
   };
 
   const moveDown = (): void => {
     movements.push({ dx: 0, dy: 1 });
+    currentPos.y += 1;
   };
 
   const moveLeft = (): void => {
     movements.push({ dx: -1, dy: 0 });
+    currentPos.x -= 1;
   };
 
   const moveRight = (): void => {
     movements.push({ dx: 1, dy: 0 });
+    currentPos.x += 1;
   };
 
   // Create a safe execution context with limited functions
