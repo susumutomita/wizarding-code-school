@@ -11,7 +11,11 @@
     "preview": "vite preview",
     "world:dev": "node scripts/world.js dev",
     "world:pack": "node scripts/world.js pack",
-    "prepare": "husky"
+    "prepare": "husky",
+    "markdown:lint": "markdownlint-cli2 \"**/*.md\"",
+    "markdown:links": "linkinator '**/*.md' --skip 'https://api.github.com' --markdown",
+    "markdown:validate-mermaid": "node scripts/validate-mermaid.js",
+    "docs:check": "pnpm markdown:lint && pnpm markdown:links && pnpm markdown:validate-mermaid"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -21,6 +25,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@mermaid-js/mermaid-cli": "^11.4.2",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
@@ -30,7 +35,9 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
+    "linkinator": "^6.1.2",
     "lint-staged": "^15.5.1",
+    "markdownlint-cli2": "^0.17.2",
     "prettier": "^3.5.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
@@ -38,6 +45,11 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
-    "*.{js,jsx,ts,tsx,css,md,json}": "prettier --write"
+    "*.md": [
+      "prettier --write",
+      "markdownlint-cli2",
+      "linkinator --skip 'https://api.github.com' --markdown"
+    ],
+    "*.{js,jsx,ts,tsx,css,json}": "prettier --write"
   }
 }
