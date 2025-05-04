@@ -1,8 +1,9 @@
 #root {
-  max-width: 1280px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  width: 100%;
 }
 
 .logo {
@@ -63,4 +64,381 @@
   font-family: monospace;
   font-weight: bold;
   color: #4caf50;
+}
+
+/* Application Container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #1a1a2e;
+  color: white;
+  border-radius: 8px 8px 0 0;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.app-content {
+  flex: 1;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Authentication Component */
+.authentication {
+  display: flex;
+  align-items: center;
+}
+
+.auth-connect {
+  display: flex;
+  flex-direction: column;
+}
+
+.connect-button,
+.verify-button,
+.disconnect-button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.connect-button {
+  background-color: #4c75f2;
+  color: white;
+}
+
+.verify-button {
+  background-color: #10b981;
+  color: white;
+  margin-right: 8px;
+}
+
+.disconnect-button {
+  background-color: #ef4444;
+  color: white;
+}
+
+.auth-connected {
+  display: flex;
+  align-items: center;
+}
+
+.address-display {
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.address-label {
+  margin-right: 0.5rem;
+  font-weight: 600;
+}
+
+.verified-badge {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  color: #10b981;
+  font-weight: bold;
+}
+
+.auth-error {
+  margin-top: 0.5rem;
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+/* Chapter Selector */
+.chapter-selector {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.chapter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chapter-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.chapter-item:hover:not(.locked) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chapter-item.current {
+  border: 2px solid #4c75f2;
+}
+
+.chapter-item.completed {
+  border-left: 4px solid #10b981;
+}
+
+.chapter-item.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chapter-number {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4c75f2;
+  color: white;
+  border-radius: 50%;
+  margin-right: 1rem;
+  font-weight: 600;
+}
+
+.chapter-info {
+  flex: 1;
+  text-align: left;
+}
+
+.chapter-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.chapter-desc {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.chapter-lock {
+  margin-left: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Chapter Intro & Success */
+.chapter-intro,
+.chapter-success {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.chapter-intro-header,
+.success-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.chapter-intro-description,
+.success-message {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.chapter-intro-narrative {
+  padding: 1rem;
+  background-color: #f0f4ff;
+  border-radius: 8px;
+  border-left: 4px solid #4c75f2;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.chapter-intro-commands ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chapter-intro-commands li {
+  padding: 0.5rem 1rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.chapter-intro-footer,
+.success-footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.start-chapter-button,
+.continue-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #4c75f2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.start-chapter-button:hover,
+.continue-button:hover {
+  background-color: #3a5dc9;
+}
+
+.next-chapter-preview {
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+}
+
+/* Coding Screen */
+.coding-screen {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 180px);
+  position: relative;
+}
+
+.coding-layout {
+  display: flex;
+  flex: 1;
+  gap: 1rem;
+  height: 100%;
+}
+
+.dungeon-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.editor-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 400px;
+}
+
+.back-button {
+  margin-top: auto;
+  padding: 0.5rem 1rem;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Run Controls */
+.run-controls {
+  margin-top: 1rem;
+}
+
+.button-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.primary-button {
+  padding: 0.5rem 1rem;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.secondary-button {
+  padding: 0.5rem 1rem;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.hint-button {
+  padding: 0.5rem 1rem;
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.feedback-area {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.success-message {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.error-message {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.syntax-error-message {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+/* Hint Box (Additional styles) */
+.hint-box {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  max-width: 350px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+/* App Footer */
+.app-footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
 }
