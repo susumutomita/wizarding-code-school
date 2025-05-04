@@ -1,8 +1,38 @@
 {
   "name": "Wizarding Code School",
   "description": "A gamified coding education mini-app that teaches programming concepts through interactive spell-casting challenges",
-  "icon": "/public/vite.svg",
+  "icon": "/public/logo.png",
+  "icons": [
+    {
+      "src": "/public/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/public/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
   "categories": ["education", "development", "games"],
-  "permissions": ["wallet-auth"],
-  "version": "0.0.0"
+  "author": {
+    "name": "Wizarding Code School Team",
+    "website": "https://example.com/wizarding-code-school"
+  },
+  "permissions": ["wallet-auth", "storage"],
+  "features": {
+    "wallet": {
+      "required": true,
+      "description": "Required to save your progress across sessions"
+    },
+    "worldId": {
+      "required": false,
+      "description": "Optional verification of your unique identity"
+    }
+  },
+  "version": "1.0.0",
+  "homepage": "https://example.com/wizarding-code-school",
+  "supportEmail": "support@example.com",
+  "privacyPolicy": "https://example.com/privacy",
+  "termsOfService": "https://example.com/terms"
 }

@@ -1,89 +1,193 @@
 import { useState, useEffect } from 'react';
+import { getFirstChapter, getChapter, Chapter } from '../data/chapters';
 
-interface Progress {
-  completedLevels: number[];
-  currentCode: Record<number, string>;
+interface ChapterProgress {
+  completed: boolean;
+  code?: string;
 }
 
-const STORAGE_KEY_PREFIX = 'wcs_';
+interface Progress {
+  currentChapterId: string;
+  chapters: Record<string, ChapterProgress>;
+}
 
 /**
- * Hook for managing user progress
- * @param address Wallet address to associate with progress
+ * Hook for managing chapter progress
+ *
+ * @param userId - Optional user identifier for saving progress (wallet address)
+ * @returns Object with chapter management methods and current chapter data
  */
 export const useProgress = (
-  address: string | null
+  userId?: string
 ): {
-  completed: number[];
-  saveProgress: (levelId: number, isCompleted: boolean, code?: string) => boolean;
-  getSavedCode: (levelId: number) => string | null;
-  isLevelCompleted: (levelId: number) => boolean;
+  currentChapter: Chapter;
+  completeChapter: (chapterId: string, code?: string) => void;
+  navigateToChapter: (chapterId: string) => void;
+  isChapterCompleted: (chapterId: string) => boolean;
+  getSavedCode: (chapterId: string) => string | undefined;
+  saveCodeProgress: (chapterId: string, code: string) => void;
+  progress: Progress;
 } => {
-  const [completed, setCompleted] = useState<number[]>([]);
-  const [savedCode, setSavedCode] = useState<Record<number, string>>({});
+  const [currentChapter, setCurrentChapter] = useState<Chapter>(getFirstChapter());
+  const [progress, setProgress] = useState<Progress>(() => {
+    // Initialize with empty progress or load from storage
+    const savedProgress = userId
+      ? localStorage.getItem(`wizarding-progress-${userId}`)
+      : localStorage.getItem('wizarding-progress');
 
+    if (savedProgress) {
+      try {
+        return JSON.parse(savedProgress) as Progress;
+      } catch (
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _e
+      ) {
+        // Remove console.log and replace with quiet fallback
+        return {
+          currentChapterId: 'chapter1',
+          chapters: { chapter1: { completed: false } },
+        };
+      }
+    }
+
+    // Default progress
+    return {
+      currentChapterId: 'chapter1',
+      chapters: { chapter1: { completed: false } },
+    };
+  });
+
+  // When userId changes, load the correct progress data
   useEffect(() => {
-    if (!address) return;
-
-    const storageKey = `${STORAGE_KEY_PREFIX}${address}`;
-    const savedProgress = localStorage.getItem(storageKey);
+    const savedProgress = userId
+      ? localStorage.getItem(`wizarding-progress-${userId}`)
+      : localStorage.getItem('wizarding-progress');
 
     if (savedProgress) {
       try {
         const parsed = JSON.parse(savedProgress) as Progress;
-        setCompleted(parsed.completedLevels || []);
-        setSavedCode(parsed.currentCode || {});
-      } catch {
-        // Failed to parse saved progress
+        setProgress(parsed);
+
+        // Set the current chapter based on saved progress
+        const chapter = getChapter(parsed.currentChapterId);
+        if (chapter) {
+          setCurrentChapter(chapter);
+        }
+      } catch (
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _e
+      ) {
+        // Remove console.log and handle silently
       }
     }
-  }, [address]);
+  }, [userId]);
 
-  const saveProgress = (levelId: number, isCompleted: boolean, code?: string): boolean => {
-    if (!address) return false;
+  // Save progress when it changes
+  useEffect(() => {
+    const storageKey = userId ? `wizarding-progress-${userId}` : 'wizarding-progress';
 
-    const storageKey = `${STORAGE_KEY_PREFIX}${address}`;
+    localStorage.setItem(storageKey, JSON.stringify(progress));
+  }, [progress, userId]);
 
-    const newCompleted = [...completed];
-    const newSavedCode = { ...savedCode };
+  /**
+   * Save code changes for current chapter
+   */
+  const saveCodeProgress = (chapterId: string, code: string): void => {
+    setProgress(currentProgress => {
+      const newProgress = { ...currentProgress };
 
-    if (isCompleted && !newCompleted.includes(levelId)) {
-      newCompleted.push(levelId);
-    }
+      if (!newProgress.chapters) {
+        newProgress.chapters = {};
+      }
 
-    if (code) {
-      newSavedCode[levelId] = code;
-    }
+      if (!newProgress.chapters[chapterId]) {
+        newProgress.chapters[chapterId] = { completed: false };
+      }
 
-    setCompleted(newCompleted);
-    setSavedCode(newSavedCode);
+      newProgress.chapters[chapterId].code = code;
 
-    const progressData: Progress = {
-      completedLevels: newCompleted,
-      currentCode: newSavedCode,
-    };
+      localStorage.setItem(
+        userId ? `wizarding-progress-${userId}` : 'wizarding-progress',
+        JSON.stringify(newProgress)
+      );
 
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(progressData));
-      return true;
-    } catch {
-      // Failed to save progress
-      return false;
+      return newProgress;
+    });
+  };
+
+  /**
+   * Mark a chapter as completed and optionally save the solution code
+   */
+  const completeChapter = (chapterId: string, code?: string): void => {
+    setProgress(prev => {
+      const updatedProgress = {
+        ...prev,
+        chapters: {
+          ...prev.chapters,
+          [chapterId]: {
+            completed: true,
+            code: code || prev.chapters[chapterId]?.code,
+          },
+        },
+      };
+
+      // If there's a next chapter, update current chapter
+      const currentChapter = getChapter(chapterId);
+      if (currentChapter?.nextChapterId) {
+        const nextChapter = getChapter(currentChapter.nextChapterId);
+        if (nextChapter) {
+          updatedProgress.currentChapterId = nextChapter.id;
+          // Initialize next chapter progress if not exists
+          if (!updatedProgress.chapters[nextChapter.id]) {
+            updatedProgress.chapters[nextChapter.id] = { completed: false };
+          }
+        }
+      }
+
+      return updatedProgress;
+    });
+  };
+
+  /**
+   * Navigate to a specific chapter if it's available
+   */
+  const navigateToChapter = (chapterId: string): void => {
+    const chapter = getChapter(chapterId);
+    if (chapter) {
+      setCurrentChapter(chapter);
+      setProgress(prev => ({
+        ...prev,
+        currentChapterId: chapterId,
+        // Initialize chapter progress if not exists
+        chapters: {
+          ...prev.chapters,
+          [chapterId]: prev.chapters[chapterId] || { completed: false },
+        },
+      }));
     }
   };
 
-  const getSavedCode = (levelId: number): string | null => {
-    return savedCode[levelId] || null;
+  /**
+   * Check if a specific chapter is completed
+   */
+  const isChapterCompleted = (chapterId: string): boolean => {
+    return !!progress.chapters[chapterId]?.completed;
   };
 
-  const isLevelCompleted = (levelId: number): boolean => {
-    return completed.includes(levelId);
+  /**
+   * Get saved code for a chapter if it exists
+   */
+  const getSavedCode = (chapterId: string): string | undefined => {
+    return progress.chapters[chapterId]?.code;
   };
 
   return {
-    completed,
-    saveProgress,
+    currentChapter,
+    completeChapter,
+    navigateToChapter,
+    isChapterCompleted,
     getSavedCode,
-    isLevelCompleted,
+    saveCodeProgress,
+    progress,
   };
 };

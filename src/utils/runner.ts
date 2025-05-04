@@ -3,7 +3,16 @@ import { Command } from '../types';
 /**
  * Runner type for execution outcomes
  */
-export type RunnerResult = 'success' | 'fail';
+export type RunnerResult = 'success' | 'fail' | 'error';
+
+/**
+ * Error information object
+ */
+export interface RunnerError {
+  message: string;
+  line?: number;
+  column?: number;
+}
 
 /**
  * Position interface for player location in maze
@@ -20,14 +29,14 @@ export interface Position {
  * @param initialPos - Starting position of the player
  * @param maze - 2D array representing the maze (0=empty, 1=wall, 2=start, 3=goal)
  * @param onStep - Callback function called on each step with updated position
- * @param onEnd - Callback function called when execution ends with result
+ * @param onEnd - Callback function called when execution ends with result and optional error
  */
 export function run(
   commands: Command[],
   initialPos: Position,
   maze: number[][],
   onStep: (pos: Position) => void,
-  onEnd: (result: RunnerResult) => void
+  onEnd: (result: RunnerResult, error?: RunnerError) => void
 ): { stop: () => void } {
   const currentPos: Position = { ...initialPos };
   let commandIndex = 0;
@@ -52,6 +61,7 @@ export function run(
   const step = (timestamp: number): void => {
     if (!running) return;
 
+    // Control animation speed (200ms between steps)
     if (timestamp - lastTimestamp < 200) {
       animationFrameId = requestAnimationFrame(step);
       return;
@@ -64,7 +74,9 @@ export function run(
       if (isGoal(currentPos)) {
         onEnd('success');
       } else {
-        onEnd('fail'); // Failed to reach goal
+        onEnd('fail', {
+          message: "Your spell finished, but you didn't reach the goal. Try a different approach!",
+        });
       }
       return;
     }
@@ -76,6 +88,7 @@ export function run(
     };
 
     if (isValidPosition(newPos)) {
+      // Valid move, update position
       currentPos.x = newPos.x;
       currentPos.y = newPos.y;
       onStep(currentPos);
@@ -88,8 +101,11 @@ export function run(
 
       commandIndex++;
     } else {
+      // Hit a wall or went out of bounds
       running = false;
-      onEnd('fail');
+      onEnd('fail', {
+        message: `You hit a wall at position (${newPos.x}, ${newPos.y}). Your spell needs adjusting!`,
+      });
       return;
     }
 

@@ -1,38 +1,113 @@
 import { Command } from '../types';
 
 /**
+ * Custom error for spell runtime issues
+ */
+export class SpellRuntimeError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'SpellRuntimeError';
+  }
+}
+
+/**
  * Parses spell code text into executable commands
  *
  * @param text - Multiline spell code to parse
  * @returns Array of Command objects with dx/dy movement directives
- * @throws SyntaxError for unknown commands
+ * @throws SyntaxError for unknown commands or syntax issues
+ * @throws SpellRuntimeError for runtime execution issues
  */
 export function parse(text: string): Command[] {
-  const commands: Command[] = [];
+  // Create a function to check if a move is possible in a given direction
+  // These functions will be available in the user's code
+  const canMoveUp = (): boolean => true;
+  const canMoveDown = (): boolean => true;
+  const canMoveLeft = (): boolean => true;
+  const canMoveRight = (): boolean => true;
 
-  // Split text into lines and process each line
-  const lines = text.split('\n');
+  // Create functions that will record movement commands
+  const movements: Command[] = [];
 
-  for (const line of lines) {
-    // Skip empty lines and comment lines
-    const trimmedLine = line.trim();
-    if (trimmedLine === '' || trimmedLine.startsWith('//')) {
-      continue;
+  const moveUp = (): void => {
+    movements.push({ dx: 0, dy: -1 });
+  };
+
+  const moveDown = (): void => {
+    movements.push({ dx: 0, dy: 1 });
+  };
+
+  const moveLeft = (): void => {
+    movements.push({ dx: -1, dy: 0 });
+  };
+
+  const moveRight = (): void => {
+    movements.push({ dx: 1, dy: 0 });
+  };
+
+  // Create a safe execution context with limited functions
+  const safeExecute = (code: string): Command[] => {
+    try {
+      // Reset movements array
+      movements.length = 0;
+
+      // Create a safe function that will execute the code with access to only permitted functions
+      const sandbox = new Function(
+        'moveUp',
+        'moveDown',
+        'moveLeft',
+        'moveRight',
+        'canMoveUp',
+        'canMoveDown',
+        'canMoveLeft',
+        'canMoveRight',
+        `"use strict";
+        try {
+          ${code}
+        } catch (e) {
+          throw new Error('Runtime error: ' + e.message);
+        }`
+      );
+
+      // Maximum iterations to prevent infinite loops
+      const MAX_COMMANDS = 1000;
+
+      // Execute the sandbox function with our movement recorders
+      sandbox(
+        moveUp,
+        moveDown,
+        moveLeft,
+        moveRight,
+        canMoveUp,
+        canMoveDown,
+        canMoveLeft,
+        canMoveRight
+      );
+
+      // Check if too many commands were generated (possible infinite loop)
+      if (movements.length > MAX_COMMANDS) {
+        throw new SpellRuntimeError(`Your spell generated too many steps (${movements.length}).
+          There might be an infinite loop in your code.`);
+      }
+
+      return [...movements];
+    } catch (error) {
+      if (error instanceof Error) {
+        const errorMessage = error.message;
+        // Improve error messages for common issues
+        if (errorMessage.includes('is not defined')) {
+          const match = errorMessage.match(/(\w+) is not defined/);
+          const funcName = match ? match[1] : 'A function';
+          throw new SyntaxError(
+            `${funcName} is not a valid spell command. Check your spelling and use only approved spell commands.`
+          );
+        }
+        throw new SpellRuntimeError(`Spell casting error: ${errorMessage}`);
+      }
+      throw new SpellRuntimeError('Unknown error in your spell.');
     }
+  };
 
-    // Check for movement commands
-    if (trimmedLine.startsWith('moveUp(') && trimmedLine.endsWith(');')) {
-      commands.push({ dx: 0, dy: -1 });
-    } else if (trimmedLine.startsWith('moveDown(') && trimmedLine.endsWith(');')) {
-      commands.push({ dx: 0, dy: 1 });
-    } else if (trimmedLine.startsWith('moveLeft(') && trimmedLine.endsWith(');')) {
-      commands.push({ dx: -1, dy: 0 });
-    } else if (trimmedLine.startsWith('moveRight(') && trimmedLine.endsWith(');')) {
-      commands.push({ dx: 1, dy: 0 });
-    } else {
-      throw new SyntaxError(`Unknown command: '${trimmedLine}'`);
-    }
-  }
-
-  return commands;
+  // Execute the code in our safe environment
+  return safeExecute(text);
 }

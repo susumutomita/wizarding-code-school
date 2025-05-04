@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import './styles.css';
 
 /**
@@ -21,6 +21,8 @@ interface DungeonViewProps {
   onPosChange?: (newPos: Position) => void;
   /** Whether to enable debug mode with WASD controls */
   debugMode?: boolean;
+  /** Animation state for success/failure/wall-collision */
+  animationState?: 'success' | 'failure' | 'wall-collision' | null;
 }
 
 /**
@@ -32,7 +34,10 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
   pos,
   onPosChange,
   debugMode = false,
+  animationState = null,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [pathTraces, setPathTraces] = useState<Position[]>([]);
   const [localPos, setLocalPos] = useState<Position>(pos);
 
   useEffect(() => {
@@ -87,6 +92,21 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
     };
   }, [debugMode, localPos, maze, onPosChange]);
 
+  useEffect(() => {
+    // Add current position to path traces
+    if (pos.x !== undefined && pos.y !== undefined) {
+      // Limit path trace to most recent 10 positions
+      setPathTraces(prev => {
+        const newTraces = [...prev, { ...pos }];
+        return newTraces.slice(-10); // Keep only most recent 10 positions
+      });
+    }
+  }, [pos]);
+
+  useEffect(() => {
+    setPathTraces([]);
+  }, [maze]);
+
   const getCellClass = (cellValue: number, rowIdx: number, colIdx: number): string => {
     if (rowIdx === localPos.y && colIdx === localPos.x) {
       return 'cell player';
@@ -106,8 +126,21 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
     }
   };
 
+  const getTraceStyle = (trace: Position): React.CSSProperties => {
+    const cellSize = containerRef.current ? containerRef.current.clientWidth / maze[0].length : 0;
+
+    return {
+      left: `${trace.x * cellSize + cellSize / 2}px`,
+      top: `${trace.y * cellSize + cellSize / 2}px`,
+      transform: 'translate(-50%, -50%)',
+    };
+  };
+
   return (
-    <div className="dungeon-container">
+    <div
+      className={`dungeon-container ${animationState ? animationState + '-animation' : ''}`}
+      ref={containerRef}
+    >
       <div
         className="dungeon-grid"
         style={{
@@ -121,12 +154,26 @@ export const DungeonView: React.FC<DungeonViewProps> = ({
           ))
         )}
       </div>
+
+      {/* Path traces */}
+      {pathTraces.map((trace, idx) => (
+        <div
+          key={`trace-${idx}`}
+          className="path-trace"
+          style={{
+            ...getTraceStyle(trace),
+            opacity: 0.1 + (idx / pathTraces.length) * 0.3, // Fade out older traces
+          }}
+        />
+      ))}
+
       {debugMode && (
         <div className="debug-info">
           <p>Debug Mode: Use WASD keys to move</p>
           <p>
             Position: ({localPos.x}, {localPos.y})
           </p>
+          {animationState && <div>Animation: {animationState}</div>}
         </div>
       )}
     </div>
