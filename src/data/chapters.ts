@@ -1,5 +1,6 @@
 import maze01 from './maze-01.json';
 import maze02 from './maze-02.json';
+import mazeChapter3 from './maze-chapter3.json';
 
 export interface Chapter {
   id: string;
@@ -109,17 +110,18 @@ while (canMoveRight()) {
   },
   chapter3: {
     id: 'chapter3',
-    title: 'Chapter 3: Potions Class',
-    description: 'Put your wizarding skills to the test in Potions class.',
-    maze: maze01, // Would replace with a different maze for this chapter
-    startPosition: findStartPosition(maze01),
+    title: 'Chapter 3: Potions Class - Decision Making',
+    description: 'Learn to make decisions in your spells using conditional logic.',
+    maze: mazeChapter3,
+    startPosition: findStartPosition(mazeChapter3),
     hints: [
-      'This potion requires precise navigation.',
-      'Try combining what you learned about loops with directional changes.',
-      'Sometimes you need to go in one direction, then change course.',
-      'Remember to check if you can move in a direction before trying.',
+      'This maze has multiple paths and dead ends.',
+      'Use if statements to check which direction you can move.',
+      'Try using if (canMoveRight()) { moveRight(); } else { moveDown(); }',
+      'You can combine if/else with while loops for more complex navigation.',
+      'Remember to check all possible directions before deciding which way to go.',
     ],
-    requiredCommands: ['while', 'canMoveRight', 'canMoveDown'],
+    requiredCommands: ['if', 'canMoveRight', 'canMoveDown', 'canMoveLeft', 'canMoveUp'],
     allowedCommands: [
       'moveUp',
       'moveDown',
@@ -129,10 +131,31 @@ while (canMoveRight()) {
       'canMoveDown',
       'canMoveLeft',
       'canMoveRight',
+      'if',
+      'else',
     ],
     introductoryText:
-      "Welcome to Potions class! In this advanced lesson, you'll need to navigate a complex path to brew a successful potion. Use all the spells you've learned so far.",
-    successMessage: "Incredible! Your potion is perfect! You've become a true wizarding coder!",
+      "Welcome to Potions class! In this advanced lesson, you'll need to make decisions based on the maze layout. Unlike previous mazes, this one has multiple paths and dead ends. You'll need to use conditional logic (if/else statements) to check which direction you can move and choose the correct path. For example, you might need to write code like: if (canMoveRight()) { moveRight(); } else { moveDown(); }",
+    sampleSolution: `// Example of using if/else for decision making
+if (canMoveRight()) {
+  moveRight();
+} else if (canMoveDown()) {
+  moveDown();
+}
+
+while (canMoveDown()) {
+  moveDown();
+}
+
+if (canMoveRight()) {
+  moveRight();
+} else if (canMoveLeft()) {
+  moveLeft();
+} else {
+  moveUp();
+}`,
+    successMessage:
+      "Incredible! Your potion is perfect! You've mastered the art of decision making in your spells!",
   },
 };
 
