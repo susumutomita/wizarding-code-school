@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { parse, SpellRuntimeError } from '../utils/parse';
+import { parse, SpellRuntimeError, checkRequiredCommands } from '../utils/parse';
 import { run, RunnerResult } from '../utils/runner';
 import { TorchState, Position } from '../types';
+import { Chapter } from '../data/chapters';
 
 /**
  * Props for the RunControls component
@@ -16,7 +17,10 @@ interface RunControlsProps {
   /** Callback when position changes */
   onPositionChange: (pos: Position) => void;
   /** Optional callback to save progress */
-  onSuccess?: (code: string) => void;
+  onSuccess?: (
+    code: string,
+    validationResult?: { allRequirementsMet: boolean; missingCommands: string[] }
+  ) => void;
   /** Optional callback for showing a hint */
   onShowHint?: () => void;
   /** Optional callback for animation state */
@@ -25,6 +29,8 @@ interface RunControlsProps {
   torches?: TorchState[];
   /** Optional callback for updating torch states */
   onTorchUpdate?: (torches: TorchState[]) => void;
+  /** Current chapter for requirement validation */
+  chapter?: Chapter;
 }
 
 /**
@@ -40,6 +46,7 @@ export const RunControls: React.FC<RunControlsProps> = ({
   onAnimationState,
   torches = [],
   onTorchUpdate,
+  chapter,
 }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<RunnerResult | null>(null);
@@ -127,10 +134,18 @@ export const RunControls: React.FC<RunControlsProps> = ({
               onAnimationState('success');
             }
 
+            // Check if solution uses all required commands
+            let validationResult:
+              | { allRequirementsMet: boolean; missingCommands: string[] }
+              | undefined;
+            if (chapter && chapter.requiredCommands && chapter.requiredCommands.length > 0) {
+              validationResult = checkRequiredCommands(code, chapter.requiredCommands);
+            }
+
             // Wait for the animation to play before showing success dialog
             setTimeout(() => {
               if (onSuccess) {
-                onSuccess(code);
+                onSuccess(code, validationResult);
               }
             }, 1500);
           } else if (runResult === 'fail') {

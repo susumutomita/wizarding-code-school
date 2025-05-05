@@ -197,3 +197,70 @@ export function parse(
   // Execute the code in our safe environment
   return safeExecute(text);
 }
+
+/**
+ * Checks if the user's code includes all required commands for a chapter
+ *
+ * @param code - The student's code solution
+ * @param requiredCommands - Array of command strings that should be present in the solution
+ * @returns Object containing missing commands and whether all requirements are met
+ */
+export function checkRequiredCommands(
+  code: string,
+  requiredCommands: string[]
+): {
+  allRequirementsMet: boolean;
+  missingCommands: string[];
+} {
+  // Create lookup patterns for different programming concepts
+  const conceptPatterns: Record<string, RegExp> = {
+    // Loops
+    while: /while\s*\(/i,
+    for: /for\s*\(/i,
+
+    // Conditionals
+    if: /if\s*\(/i,
+    else: /else\s*{/i,
+    'else if': /else\s+if\s*\(/i,
+
+    // Direction checking
+    canMoveRight: /canMoveRight\s*\(/i,
+    canMoveLeft: /canMoveLeft\s*\(/i,
+    canMoveUp: /canMoveUp\s*\(/i,
+    canMoveDown: /canMoveDown\s*\(/i,
+
+    // Variable declaration
+    let: /let\s+[a-zA-Z_$][a-zA-Z0-9_$]*/i,
+    const: /const\s+[a-zA-Z_$][a-zA-Z0-9_$]*/i,
+    var: /var\s+[a-zA-Z_$][a-zA-Z0-9_$]*/i,
+
+    // Functions
+    function: /function\s+[a-zA-Z_$][a-zA-Z0-9_$]*\s*\(/i,
+    'arrow function': /\([^)]*\)\s*=>\s*{/i,
+
+    // Movement commands
+    moveRight: /moveRight\s*\(/i,
+    moveLeft: /moveLeft\s*\(/i,
+    moveUp: /moveUp\s*\(/i,
+    moveDown: /moveDown\s*\(/i,
+
+    // Add more patterns for other concepts as needed
+  };
+
+  // Check each required command
+  const missingCommands = requiredCommands.filter(command => {
+    // If we have a pattern for this concept, use it
+    if (conceptPatterns[command]) {
+      return !conceptPatterns[command].test(code);
+    }
+
+    // If no specific pattern, just check if the string appears in the code
+    // This is a simple fallback but may have false positives
+    return !code.includes(command);
+  });
+
+  return {
+    allRequirementsMet: missingCommands.length === 0,
+    missingCommands,
+  };
+}
