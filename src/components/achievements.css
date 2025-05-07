@@ -1,0 +1,66 @@
+/* Achievement Stars Styling */
+.achievement-stars {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stars-container {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+  gap: 10px;
+}
+
+.achievement-star {
+  font-size: 32px;
+  transition: transform 0.3s ease;
+}
+
+.achievement-star.earned {
+  color: gold;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+  transform: scale(1.1);
+}
+
+.achievement-star.unearned {
+  color: #888;
+  opacity: 0.6;
+}
+
+.achievement-details {
+  text-align: left;
+  margin-top: 10px;
+}
+
+.achievement-earned {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.achievement-missed {
+  color: #ff9800;
+}
+
+/* Small stars for chapter selector */
+.chapter-achievements {
+  display: flex;
+  margin-top: 5px;
+  gap: 5px;
+}
+
+.achievement-star-small {
+  font-size: 14px;
+}
+
+.achievement-star-small.earned {
+  color: gold;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.achievement-star-small.unearned {
+  color: #888;
+  opacity: 0.5;
+}

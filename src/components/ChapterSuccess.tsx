@@ -1,5 +1,6 @@
 import React from 'react';
 import { Chapter, getChapter } from '../data/chapters';
+import './achievements.css';
 
 interface ChapterSuccessProps {
   chapter: Chapter;
@@ -8,12 +9,18 @@ interface ChapterSuccessProps {
     allRequirementsMet: boolean;
     missingCommands: string[];
   };
+  achievementData?: {
+    noHints?: boolean;
+    attemptsCount?: number;
+    stars?: number;
+  };
 }
 
 export const ChapterSuccess: React.FC<ChapterSuccessProps> = ({
   chapter,
   onContinue,
   validationResult,
+  achievementData,
 }) => {
   // Check if there's a next chapter
   const hasNextChapter = !!chapter.nextChapterId;
@@ -32,6 +39,52 @@ export const ChapterSuccess: React.FC<ChapterSuccessProps> = ({
 
       <div className="success-content">
         <p className="success-message">{chapter.successMessage}</p>
+
+        {/* Display achievement stars */}
+        {achievementData && (
+          <div className="achievement-stars">
+            <h3>
+              <span role="img" aria-label="trophy">
+                🏆
+              </span>{' '}
+              Your Achievements
+            </h3>
+            <div className="stars-container">
+              {[...Array(3)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`achievement-star ${i < (achievementData.stars || 0) ? 'earned' : 'unearned'}`}
+                  role="img"
+                  aria-label={i < (achievementData.stars || 0) ? 'earned star' : 'unearned star'}
+                >
+                  {i < (achievementData.stars || 0) ? '⭐' : '☆'}
+                </span>
+              ))}
+            </div>
+            <div className="achievement-details">
+              <p>
+                <span
+                  className={achievementData.noHints ? 'achievement-earned' : 'achievement-missed'}
+                >
+                  {achievementData.noHints ? '✅' : '❌'} Completed without hints
+                </span>
+              </p>
+              <p>
+                <span
+                  className={
+                    (achievementData.attemptsCount || 0) <= 3
+                      ? 'achievement-earned'
+                      : 'achievement-missed'
+                  }
+                >
+                  {(achievementData.attemptsCount || 0) <= 3 ? '✅' : '❌'} Completed in{' '}
+                  {achievementData.attemptsCount || 0} attempts{' '}
+                  {(achievementData.attemptsCount || 0) <= 3 ? '(3 or fewer)' : '(more than 3)'}
+                </span>
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Show feedback about missing required commands */}
         {validationResult && !validationResult.allRequirementsMet && (

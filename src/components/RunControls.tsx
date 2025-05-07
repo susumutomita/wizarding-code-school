@@ -19,7 +19,8 @@ interface RunControlsProps {
   /** Optional callback to save progress */
   onSuccess?: (
     code: string,
-    validationResult?: { allRequirementsMet: boolean; missingCommands: string[] }
+    validationResult?: { allRequirementsMet: boolean; missingCommands: string[] },
+    achievementData?: { noHints: boolean; attemptsCount: number }
   ) => void;
   /** Optional callback for showing a hint */
   onShowHint?: () => void;
@@ -53,6 +54,7 @@ export const RunControls: React.FC<RunControlsProps> = ({
   const [stopRunner, setStopRunner] = useState<(() => void) | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
+  const [usedHint, setUsedHint] = useState(false);
   const [localTorches, setLocalTorches] = useState<TorchState[]>(torches);
 
   // Sync localTorches state with the torches prop when it changes
@@ -81,6 +83,13 @@ export const RunControls: React.FC<RunControlsProps> = ({
     setLocalTorches(resetTorchStates);
     if (onTorchUpdate) {
       onTorchUpdate(resetTorchStates);
+    }
+  };
+
+  const handleHintButtonClick = (): void => {
+    if (onShowHint) {
+      setUsedHint(true);
+      onShowHint();
     }
   };
 
@@ -145,7 +154,10 @@ export const RunControls: React.FC<RunControlsProps> = ({
             // Wait for the animation to play before showing success dialog
             setTimeout(() => {
               if (onSuccess) {
-                onSuccess(code, validationResult);
+                onSuccess(code, validationResult, {
+                  noHints: !usedHint,
+                  attemptsCount: attempts,
+                });
               }
             }, 1500);
           } else if (runResult === 'fail') {
@@ -246,7 +258,7 @@ export const RunControls: React.FC<RunControlsProps> = ({
           </button>
         )}
         {onShowHint && (
-          <button onClick={onShowHint} className="hint-button" disabled={isRunning}>
+          <button onClick={handleHintButtonClick} className="hint-button" disabled={isRunning}>
             Get Hint
           </button>
         )}

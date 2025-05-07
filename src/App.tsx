@@ -151,9 +151,10 @@ ${currentChapter.allowedCommands[0]}();`
   // Handle successful chapter completion
   const handleChapterSuccess = (
     code: string,
-    validationResult?: { allRequirementsMet: boolean; missingCommands: string[] }
+    validationResult?: { allRequirementsMet: boolean; missingCommands: string[] },
+    achievementData?: { noHints: boolean; attemptsCount: number }
   ): void => {
-    completeChapter(currentChapter.id, code);
+    completeChapter(currentChapter.id, code, achievementData);
     setCurrentValidationResult(validationResult);
     setCurrentScreen(AppScreen.SUCCESS);
   };
@@ -196,6 +197,7 @@ ${currentChapter.allowedCommands[0]}();`
             <ChapterSelector
               currentChapterId={currentChapter.id}
               completedChapters={completedChapterIds}
+              progress={progress}
               onSelectChapter={(id: string): void => {
                 // チャプター切り替え前に現在のコードを保存
                 if (currentChapter) {
@@ -282,6 +284,7 @@ ${currentChapter.allowedCommands[0]}();`
             chapter={currentChapter}
             onContinue={handleContinue}
             validationResult={currentValidationResult}
+            achievementData={progress.chapters[currentChapter.id]?.achievements}
           />
         )}
       </main>
