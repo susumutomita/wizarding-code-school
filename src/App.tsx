@@ -44,6 +44,9 @@ function App(): React.ReactElement {
   const [code, setCode] = useState<string>('// Write your spell here\nmoveRight();');
   const [showHints, setShowHints] = useState<boolean>(false);
   const [animationState, setAnimationState] = useState<AnimationState>(null);
+  const [currentValidationResult, setCurrentValidationResult] = useState<
+    { allRequirementsMet: boolean; missingCommands: string[] } | undefined
+  >(undefined);
 
   // 自動保存タイマー用のID
   const [saveTimeoutId, setSaveTimeoutId] = useState<number | null>(null);
@@ -146,8 +149,12 @@ ${currentChapter.allowedCommands[0]}();`
     .map(([id]) => id);
 
   // Handle successful chapter completion
-  const handleChapterSuccess = (code: string): void => {
+  const handleChapterSuccess = (
+    code: string,
+    validationResult?: { allRequirementsMet: boolean; missingCommands: string[] }
+  ): void => {
     completeChapter(currentChapter.id, code);
+    setCurrentValidationResult(validationResult);
     setCurrentScreen(AppScreen.SUCCESS);
   };
 
@@ -155,6 +162,7 @@ ${currentChapter.allowedCommands[0]}();`
   const handleContinue = (): void => {
     // Reset animation state
     setAnimationState(null);
+    setCurrentValidationResult(undefined);
 
     if (currentChapter.nextChapterId) {
       navigateToChapter(currentChapter.nextChapterId);
@@ -270,7 +278,11 @@ ${currentChapter.allowedCommands[0]}();`
         )}
 
         {currentScreen === AppScreen.SUCCESS && (
-          <ChapterSuccess chapter={currentChapter} onContinue={handleContinue} />
+          <ChapterSuccess
+            chapter={currentChapter}
+            onContinue={handleContinue}
+            validationResult={currentValidationResult}
+          />
         )}
       </main>
 
