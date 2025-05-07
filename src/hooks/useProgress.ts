@@ -135,13 +135,17 @@ export const useProgress = (
       attemptsCount: number;
     }
   ): void => {
-    setProgress(prev => {
+    const calculateStars = (achievementData?: { noHints: boolean; attemptsCount: number }): number => {
       let stars = 1; // At least 1 star for completion
       if (achievementData) {
         if (achievementData.noHints) stars++;
         if (achievementData.attemptsCount <= 3) stars++;
       }
+      return stars;
+    };
 
+    setProgress(prev => {
+      const stars = calculateStars(achievementData);
       const updatedProgress = {
         ...prev,
         chapters: {
