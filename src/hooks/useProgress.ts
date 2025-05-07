@@ -4,9 +4,14 @@ import { getFirstChapter, getChapter, Chapter } from '../data/chapters';
 interface ChapterProgress {
   completed: boolean;
   code?: string;
+  achievements?: {
+    noHints?: boolean;
+    attemptsCount?: number;
+    stars?: number;
+  };
 }
 
-interface Progress {
+export interface Progress {
   currentChapterId: string;
   chapters: Record<string, ChapterProgress>;
 }
@@ -21,7 +26,11 @@ export const useProgress = (
   userId?: string
 ): {
   currentChapter: Chapter;
-  completeChapter: (chapterId: string, code?: string) => void;
+  completeChapter: (
+    chapterId: string,
+    code?: string,
+    achievementData?: { noHints: boolean; attemptsCount: number }
+  ) => void;
   navigateToChapter: (chapterId: string) => void;
   isChapterCompleted: (chapterId: string) => boolean;
   getSavedCode: (chapterId: string) => string | undefined;
@@ -116,10 +125,23 @@ export const useProgress = (
   };
 
   /**
-   * Mark a chapter as completed and optionally save the solution code
+   * Mark a chapter as completed and optionally save the solution code and achievements
    */
-  const completeChapter = (chapterId: string, code?: string): void => {
+  const completeChapter = (
+    chapterId: string,
+    code?: string,
+    achievementData?: {
+      noHints: boolean;
+      attemptsCount: number;
+    }
+  ): void => {
     setProgress(prev => {
+      let stars = 1; // At least 1 star for completion
+      if (achievementData) {
+        if (achievementData.noHints) stars++;
+        if (achievementData.attemptsCount <= 3) stars++;
+      }
+
       const updatedProgress = {
         ...prev,
         chapters: {
@@ -127,6 +149,14 @@ export const useProgress = (
           [chapterId]: {
             completed: true,
             code: code || prev.chapters[chapterId]?.code,
+            achievements: {
+              ...prev.chapters[chapterId]?.achievements,
+              ...(achievementData && {
+                noHints: achievementData.noHints,
+                attemptsCount: achievementData.attemptsCount,
+                stars,
+              }),
+            },
           },
         },
       };
