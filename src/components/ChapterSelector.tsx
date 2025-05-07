@@ -38,7 +38,7 @@ export const ChapterSelector: React.FC<ChapterSelectorProps> = ({
               <div className="chapter-info">
                 <div className="chapter-title">{chapter.title}</div>
                 <div className="chapter-desc">{chapter.description}</div>
-                {isCompleted && completedChapters.includes(chapter.id) && (
+                {isCompleted && (
                   <div className="chapter-achievements">
                     {[...Array(3)].map((_, i) => {
                       const chapterAchievements = progress?.chapters[chapter.id]?.achievements;
